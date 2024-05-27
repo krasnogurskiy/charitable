@@ -30,6 +30,8 @@ public class PaymentController {
     private static final String PUBLIC_KEY = System.getenv("LIQPAY_PUBLIC_KEY");
     private static final String PRIVATE_KEY = System.getenv("LIQPAY_SECRET_KEY");
 
+    private static final String APP_HOST = System.getenv("APP_HOST");
+
     private final RequestRepo requestRepo;
     private final UserRepo userRepo;
     private final DonationRepo donationRepo;
@@ -64,7 +66,7 @@ public class PaymentController {
             user = userRepo.findByUsername("Anonymous");
         }
         params.put("product_description", String.valueOf(user.getId()));
-        params.put("result_url", "https://charitable-ls.herokuapp.com/get-transaction-status");
+        params.put("result_url", APP_HOST + "/get-transaction-status");
         params.put("sandbox", "1"); // enable the testing environment and card will NOT charged. If not set will be used property isCnbSandbox()
 
         LiqPayService liqPay = new LiqPayService(PUBLIC_KEY, PRIVATE_KEY, params);
