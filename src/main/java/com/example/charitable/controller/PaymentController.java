@@ -82,7 +82,7 @@ public class PaymentController {
         return "payment";
     }
 
-    @RequestMapping(value = "/get-transaction-status", method = RequestMethod.GET)
+    @RequestMapping(value = "/get-transaction-status", method = RequestMethod.POST)
     public String paymentPost(String data, Donation donation) throws JsonProcessingException {
         String decodedData = new String(Base64.decodeBase64(data.getBytes()));
         ObjectMapper mapper = new ObjectMapper();
