@@ -66,7 +66,7 @@ public class PaymentController {
             user = userRepo.findByUsername("Anonymous");
         }
         params.put("product_description", String.valueOf(user.getId()));
-        params.put("result_url", APP_HOST + "/get-transaction-status");
+        params.put("server_url", APP_HOST + "/get-transaction-status");
         params.put("sandbox", "1"); // enable the testing environment and card will NOT charged. If not set will be used property isCnbSandbox()
 
         LiqPayService liqPay = new LiqPayService(PUBLIC_KEY, PRIVATE_KEY, params);
@@ -77,10 +77,12 @@ public class PaymentController {
         model.addAttribute("signature", signature);
         model.addAttribute("donation", new Donation());
 
+
+
         return "payment";
     }
 
-    @RequestMapping(value = "/get-transaction-status", method = RequestMethod.POST)
+    @RequestMapping(value = "/get-transaction-status", method = RequestMethod.GET)
     public String paymentPost(String data, Donation donation) throws JsonProcessingException {
         String decodedData = new String(Base64.decodeBase64(data.getBytes()));
         ObjectMapper mapper = new ObjectMapper();
