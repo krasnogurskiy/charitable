@@ -50,7 +50,7 @@ public class MainController {
         return "main";
     }
 
-     @GetMapping("/main/donation_successful/{id}")
+     @GetMapping("/main/donation-successful/{id}")
      public String successfulDonation(@PathVariable int id, Principal principal, Model model){
          List<Request> requests = requestRepo.findAll();
          requests.sort(new Request.ComparatorByPercentProgress());

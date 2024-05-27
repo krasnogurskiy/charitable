@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import sun.rmi.runtime.Log;
 
 import java.security.Principal;
 import java.sql.Timestamp;
@@ -67,6 +66,7 @@ public class PaymentController {
         }
         params.put("product_description", String.valueOf(user.getId()));
         params.put("server_url", APP_HOST + "/get-transaction-status");
+        params.put("result_url", APP_HOST + "/donation-successful");
         params.put("sandbox", "1"); // enable the testing environment and card will NOT charged. If not set will be used property isCnbSandbox()
 
         LiqPayService liqPay = new LiqPayService(PUBLIC_KEY, PRIVATE_KEY, params);
@@ -112,6 +112,12 @@ public class PaymentController {
 
         }
         Donation lastDon = donationRepo.findTopByOrderByIdDesc();
-        return "redirect:/main/donation_successful/" + lastDon.getId();//dataJson.get("product_category").asInt()
+        return "redirect:/main/donation-successful/" + lastDon.getId();//dataJson.get("product_category").asInt()
+    }
+
+    @RequestMapping(value = "/donation-successful", method = RequestMethod.GET)
+    public String donationSuccessful()  {
+        Donation lastDon = donationRepo.findTopByOrderByIdDesc(); // get latest donation saved in db
+        return "redirect:/main/donation-successful/" + lastDon.getId();
     }
 }
