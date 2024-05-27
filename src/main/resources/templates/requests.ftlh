@@ -71,7 +71,7 @@
             <#list requests as item>
                 <a href="/request/${item.id}">
                     <div class="request-block" data-price="${item.getRequiredSum()?c}" data-percents="${(item.getCollectedSum() / item.getRequiredSum() * 100)?string("0")}">
-                        <div class="r-img" style="background-image: url(${"https://charitable-upload.s3.amazonaws.com/" + item.getImageNames()[0]})"></div>
+                        <div class="r-img" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/" + item.getImageNames()[0]})"></div>
                         <div class="rbcontent">
                             <div class="headerblock">
                                 <div class="tog">

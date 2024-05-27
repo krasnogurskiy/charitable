@@ -20,7 +20,7 @@
             overflow: hidden;
             cursor: pointer;
             border: 3px solid #ffffff ;
-            background-image:url(${"https://charitable-upload.s3.amazonaws.com/avatar/" + userObj.avatar});
+            background-image:url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + userObj.avatar});
         }
     </style>
 </@c.head>

@@ -12,7 +12,7 @@
     <script>jQuery(function($) {$('.slider').sss();});</script>
     <style>
         .img-wrapper{
-            background-image: url(${"https://charitable-upload.s3.amazonaws.com/" + request.getImageNames()[0]});
+            background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/" + request.getImageNames()[0]});
             background-position: center;
             background-size: cover;
             height: 220px;
@@ -23,7 +23,7 @@
         .avatar{
             width: 47px;
             height: 47px;
-            background-image: url(${"https://charitable-upload.s3.amazonaws.com/avatar/" + user.avatar});
+            background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + user.avatar});
             background-position: center;
             background-size: cover;
             border-radius: 50%
@@ -146,7 +146,7 @@
                         <#if img?is_first>
                             <#continue>
                         </#if>
-                        <img src="${"https://charitable-upload.s3.amazonaws.com/" + img}" alt=""/>
+                        <img src="${"https://charitable-upload-2.s3.amazonaws.com/" + img}" alt=""/>
                     </#list>
                 </div>
             </div>
@@ -161,7 +161,7 @@
                         <#if counter < 5>
                             <div class="person aic">
                                 <div class="left">
-                                    <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload.s3.amazonaws.com/avatar/" + person.getUser().avatar});"></div>
+                                    <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + person.getUser().avatar});"></div>
                                     <div class="name">${person.getUser().getFirstName() +  " " + person.getUser().getSurname()}</div>
                                 </div>
                                 <div class="summ">$${person.getDonatedSum()}</div>

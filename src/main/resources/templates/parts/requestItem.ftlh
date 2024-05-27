@@ -1,7 +1,7 @@
 
 <#macro requestItem request>
     <div class="home-card" onclick="location.href='/request/${request.id}'">
-                <div class="home-card-image" style="background-image: url(${"https://charitable-upload.s3.amazonaws.com/" + request.getImageNames()[0]})"></div> <#--url(${"uploadingDir/" + request.getImageNames()[0]})-->
+                <div class="home-card-image" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/" + request.getImageNames()[0]})"></div> <#--url(${"uploadingDir/" + request.getImageNames()[0]})-->
                 <div class="home-card-text">
                     <h2>${request.title}<#--Post One--></h2>
                     <span class="topic-home">

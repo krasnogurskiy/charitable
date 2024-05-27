@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class S3Config {
     public static final AWSCredentials credentials;
     public static final String bucketName = "charitable-upload-2";
-    public static final String bucketAvatarName = "charitable-upload/avatar";
+    public static final String bucketAvatarName = "charitable-upload-2/avatar";
 
     static {
         //put your accesskey and secretkey here

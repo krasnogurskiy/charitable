@@ -9,7 +9,7 @@
         .profile-image{
             width: 168px;
             height: 168px;
-            background-image: url(${"https://charitable-upload.s3.amazonaws.com/avatar/" + userObj.avatar});
+            background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + userObj.avatar});
             background-position: center;
             background-size: cover;
             border-radius: 50%;

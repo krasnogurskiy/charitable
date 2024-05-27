@@ -27,7 +27,7 @@
                     <#list request.getRecentDonate() as person>
                         <div class="person aic">
                             <div class="left">
-                                <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload.s3.amazonaws.com/avatar/" + person.getUser().avatar});"></div>
+                                <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + person.getUser().avatar});"></div>
                                 <div class="name">${person.getUser().getFirstName() +  " " + person.getUser().getSurname()}</div>
                             </div>
                             <div class="summ">$${person.getDonatedSum()}</div>
