@@ -76,7 +76,7 @@
         </div>
         <div class="block3">
             <p class="hr">System Carnival</p>
-            Copyright © 2020 . Designed by Ivan Kagitin
+            Copyright © 2024 . Designed by Andrii Krasnogurskiy <br>
             All rights reserved.
         </div>
     </footer>

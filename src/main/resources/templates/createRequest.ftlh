@@ -73,24 +73,24 @@
                             <input type="hidden" id="country_code" />
                             <@form.showErrors "<br>","error"/>-->
 
-                            <div class="region">
-                                <p class="h3-text ">Choose your region:</p>
-                                <@spring.bind "request.country"/>
-                                <select name="${spring.status.expression}" class="countries" id="countryId">
-                                    <option value="">Select Country</option>
-                                </select>
-                                <@form.showErrors "<br>","error"/>
-                                <@spring.bind "request.state"/>
-                                <select name="${spring.status.expression}" class="states" id="stateId">
-                                    <option value="">Select State</option>
-                                </select>
-                                <@form.showErrors "<br>","error"/>
-                                <@spring.bind "request.city"/>
-                                <select name="${spring.status.expression}" class="cities" id="cityId">
-                                    <option value="">Select City</option>
-                                </select>
-                                <@form.showErrors "<br>","error"/>
-                            </div>
+<#--                            <div class="region">-->
+<#--                                <p class="h3-text ">Choose your region:</p>-->
+<#--                                <@spring.bind "request.country"/>-->
+<#--                                <select name="${spring.status.expression}" class="countries" id="countryId">-->
+<#--                                    <option value="">Select Country</option>-->
+<#--                                </select>-->
+<#--                                <@form.showErrors "<br>","error"/>-->
+<#--                                <@spring.bind "request.state"/>-->
+<#--                                <select name="${spring.status.expression}" class="states" id="stateId">-->
+<#--                                    <option value="">Select State</option>-->
+<#--                                </select>-->
+<#--                                <@form.showErrors "<br>","error"/>-->
+<#--                                <@spring.bind "request.city"/>-->
+<#--                                <select name="${spring.status.expression}" class="cities" id="cityId">-->
+<#--                                    <option value="">Select City</option>-->
+<#--                                </select>-->
+<#--                                <@form.showErrors "<br>","error"/>-->
+<#--                            </div>-->
 
 
 

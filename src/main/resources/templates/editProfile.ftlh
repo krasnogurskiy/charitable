@@ -87,26 +87,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="moreinf">
-                        <p class="h-text ">Edit your region:</p>
-                        <div class="wrap_select">
-                        </div>
+<#--                    <div class="moreinf">-->
+<#--                        <p class="h-text ">Edit your region:</p>-->
+<#--                        <div class="wrap_select">-->
+<#--                        </div>-->
 
-                        <div class="region edit">
-                            <select name="country" class="countries" id="countryId">
-                                <option value=""><#if userObj.country?has_content>${userObj.country}<#else>Select Country</#if></option>
-                            </select>
-                            <select name="state" class="states" id="stateId">
-                                <option value=""><#if userObj.state?has_content>${userObj.state}<#else>Select State</#if></option>
-                            </select>
-                            <select name="city" class="cities" id="cityId">
-                                <option value=""><#if userObj.city?has_content>${userObj.city}<#else>Select City</#if></option>
-                            </select>
+<#--                        <div class="region edit">-->
+<#--                            <select name="country" class="countries" id="countryId">-->
+<#--                                <option value=""><#if userObj.country?has_content>${userObj.country}<#else>Select Country</#if></option>-->
+<#--                            </select>-->
+<#--                            <select name="state" class="states" id="stateId">-->
+<#--                                <option value=""><#if userObj.state?has_content>${userObj.state}<#else>Select State</#if></option>-->
+<#--                            </select>-->
+<#--                            <select name="city" class="cities" id="cityId">-->
+<#--                                <option value=""><#if userObj.city?has_content>${userObj.city}<#else>Select City</#if></option>-->
+<#--                            </select>-->
 
-                            <input type="hidden" name="userID" value="${userObj.id}" id="">
+<#--                            <input type="hidden" name="userID" value="${userObj.id}" id="">-->
 
-                        </div>
-                    </div>
+<#--                        </div>-->
+<#--                    </div>-->
                 </div>
             </div>
             <div class="wrapview">

@@ -58,12 +58,12 @@
                         <option value="${section}">${section}</option>
                     </#list>
                 </select>
-                <select name="country" id="" class="bottom-select">
-                    <option value="">All countries</option>
-                    <#list countries as country>
-                        <option value="${country}">${country}</option>
-                    </#list>
-                </select>
+<#--                <select name="country" id="" class="bottom-select">-->
+<#--                    <option value="">All countries</option>-->
+<#--                    <#list countries as country>-->
+<#--                        <option value="${country}">${country}</option>-->
+<#--                    </#list>-->
+<#--                </select>-->
                 <button class="btn active">Apply filters</button>
             </form>
         </div>

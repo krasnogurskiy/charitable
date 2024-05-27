@@ -2526,7 +2526,7 @@ span.checkmark:hover::after {
     padding: 0;
   }
   .basicinf, .moreinf{
-    width: 50%;
+    width: 100%;
   }
   .create_proj{
     display: flex;

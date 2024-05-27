@@ -100,7 +100,7 @@
                 <div class="hiddeninfo">
                     <div class="irow">
                         <p class="txtinfo">${userObj.username}</p>
-                        <p class="txtinfo"><#if userObj.country?has_content>${userObj.city}, ${userObj.country}<#else>No geo specified</#if></p>
+<#--                        <p class="txtinfo"><#if userObj.country?has_content>${userObj.city}, ${userObj.country}<#else>No geo specified</#if></p>-->
                         <p class="txtinfo">Joined ${userObj.timestamp?date}</p>
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                         <div class="prrecent ph">
                             <div class="calls">About user</div>
                             <div class="user-row">${userObj.username}</div>
-                            <div class="user-row"><#if userObj.country?has_content>${userObj.city}, ${userObj.country}<#else>No geo specified</#if></div>
+<#--                            <div class="user-row"><#if userObj.country?has_content>${userObj.city}, ${userObj.country}<#else>No geo specified</#if></div>-->
                             <div class="user-row">Joined ${userObj.timestamp?date}</div>
                         </div>
                     </div>
