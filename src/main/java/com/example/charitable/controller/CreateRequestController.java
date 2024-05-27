@@ -34,6 +34,7 @@ import java.util.*;
 
 @Controller
 public class CreateRequestController {
+    private static final String AWS_REGION = System.getenv("AWS_REGION");
     public static Set<String> imgBufferNames = new LinkedHashSet<>();
     private final RequestRepo requestRepo;
     private final UserRepo userRepo;
@@ -42,7 +43,7 @@ public class CreateRequestController {
     AmazonS3 s3client = AmazonS3ClientBuilder
             .standard()
             .withCredentials(new AWSStaticCredentialsProvider(S3Config.credentials))
-            .withRegion(Regions.EU_WEST_3)
+            .withRegion(AWS_REGION)
             .build();
 
     AWSS3Service awsService = new AWSS3Service(s3client);
