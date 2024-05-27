@@ -23,6 +23,8 @@ import java.security.Principal;
 
 @Controller
 public class EditProfileController {
+    private static final String AWS_REGION = System.getenv("AWS_REGION");
+
     @Autowired
     private UserRepo userRepo;
 
@@ -30,7 +32,7 @@ public class EditProfileController {
     AmazonS3 s3client = AmazonS3ClientBuilder
             .standard()
             .withCredentials(new AWSStaticCredentialsProvider(S3Config.credentials))
-            .withRegion(Regions.EU_WEST_3)
+            .withRegion(AWS_REGION)
             .build();
 
     AWSS3Service awsService = new AWSS3Service(s3client);
