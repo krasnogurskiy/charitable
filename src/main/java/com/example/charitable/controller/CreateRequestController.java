@@ -68,6 +68,9 @@ public class CreateRequestController {
     }
     @PostMapping("/create-request")
     public String createRequest(@Valid Request request, BindingResult bindingResult, Principal principal, Model model){
+        request.setCountry("Ukraine");
+        request.setCity("Lviv");
+        request.setState("Lvivsk'a oblast'");
         request.setDefaultCollectedSum(0.0);
         request.setUser(userRepo.findByUsername(principal.getName()));
         request.setActive(true);

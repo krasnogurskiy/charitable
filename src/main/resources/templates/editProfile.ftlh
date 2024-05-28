@@ -103,10 +103,11 @@
 <#--                                <option value=""><#if userObj.city?has_content>${userObj.city}<#else>Select City</#if></option>-->
 <#--                            </select>-->
 
-<#--                            <input type="hidden" name="userID" value="${userObj.id}" id="">-->
+<#--                            -->
 
 <#--                        </div>-->
 <#--                    </div>-->
+                    <input type="hidden" name="userID" value="${userObj.id}" id="">
                 </div>
             </div>
             <div class="wrapview">

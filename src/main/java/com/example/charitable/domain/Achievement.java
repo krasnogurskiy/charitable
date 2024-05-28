@@ -16,7 +16,7 @@ public enum Achievement {
     EDUCATION("education","13.jpg"),
     HEALTH("health","14.jpg"),
     ENVIRONMENT("environment","11.jpg"),
-    DISASTER("disaster","10.jpg"),
+    MILITARY("military","21.jpg"),
     HUNGER("hunger","12.jpg"),
     LOCALHERO("localhero","15.jpg"),
     GLOBALHERO("globalhero","16.jpg");

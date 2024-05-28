@@ -342,11 +342,11 @@ public class User implements UserDetails {
                 this.achievements.add(Achievement.ANIMAL);
             }
         }
-        if(!this.achievements.contains(Achievement.DISASTER)) {
+        if(!this.achievements.contains(Achievement.MILITARY)) {
             // check
             if (currDon.getRequest().getSection().equals("Military")) {
-                obtainedAch.add(Achievement.DISASTER);
-                this.achievements.add(Achievement.DISASTER);
+                obtainedAch.add(Achievement.MILITARY);
+                this.achievements.add(Achievement.MILITARY);
             }
         }
         if(!this.achievements.contains(Achievement.HUNGER)) {

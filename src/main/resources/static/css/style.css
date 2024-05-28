@@ -424,7 +424,7 @@ footer{
 .category-button-wrapper-home{
   justify-self: stretch;
 }
-.disaster-button-home{
+.military-button-home{
   font-family: "GilroySemiBold"; 
   text-align: center;
   background-image: url(/img/military_blured.jpg);
@@ -439,7 +439,7 @@ footer{
 
   transition: 0.3s;
 }
-.disaster-button-home:hover{
+.military-button-home:hover{
   background-image: url(/img/military.jpg);
   background-size: 120%;
   color: #FFFFFF;

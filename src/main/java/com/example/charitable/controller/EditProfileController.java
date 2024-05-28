@@ -48,8 +48,7 @@ public class EditProfileController {
 
     @PostMapping("/edit-profile")
     public String editProfilePost(@RequestParam("userID") User user, @RequestParam("file") MultipartFile file,
-    @RequestParam("firstName") String firstName, @RequestParam("surname") String surname,
-    @RequestParam("country") String country, @RequestParam("state") String state, @RequestParam("city") String city) {
+    @RequestParam("firstName") String firstName, @RequestParam("surname") String surname) {
         try {
             //awsService.deleteObject(S3Config.bucketAvatarName,user.getAvatar());
             File fileToUpload = awsService.convertMultiPartToFile(file);
@@ -59,9 +58,6 @@ public class EditProfileController {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if(!country.isEmpty() && !city.isEmpty() && !state.isEmpty()){
-            user.setCountry(country); user.setState(state); user.setCity(city);
         }
         user.setFirstName(firstName); user.setSurname(surname);
 

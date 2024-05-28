@@ -103,11 +103,11 @@
 .environment:after{
     content: "Environment topic supported";
 }
-.disaster{
+.military{
     opacity: 1;
-    background-image: url(/img/achievements/10.jpg);
+    background-image: url(/img/achievements/21.jpg);
 }
-.disaster:after{
+.military:after{
     content: "Military topic supported";
 }
 .hunger{

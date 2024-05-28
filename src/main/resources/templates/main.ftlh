@@ -35,8 +35,8 @@
         <p class="header-text-home-2">Categories</p>
         <div class="category-wrapper-home">
             <div class="category-button-wrapper-home">
-                <a href="/requests/filter?title=&section=Disaster&country=">
-                    <p class="disaster-button-home">Military</p>
+                <a href="/requests/filter?title=&section=Military&country=">
+                    <p class="military-button-home">Military</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">

@@ -55,7 +55,7 @@
                                 <div class="categ_slct">
                                     <select id="slct" name="${spring.status.expression}">
                                         <option selected disabled>Choose the category</option>
-                                        <option value="Disaster">Military</option>
+                                        <option value="Military">Military</option>
                                         <option value="Education">Education</option>
                                         <option value="Hunger">Hunger</option>
                                         <option value="Environment">Environment</option>

@@ -91,7 +91,7 @@ public class RequestController {
 
     @GetMapping("/requests/filter")
     public String requestSearch(@RequestParam("title") String title, @RequestParam("section") String section,
-                                @RequestParam("country") String country, Model model, Principal principal) {
+                                Model model, Principal principal) {
         Iterable<Request> requests = requestRepo.findAll();
         List<Request> result = StreamSupport.stream(requests.spliterator(), false).collect(Collectors.toList());
 
@@ -109,7 +109,6 @@ public class RequestController {
 
         result.removeIf(request -> !request.getTitle().contains(title));
         result.removeIf(request -> !request.getSection().contains(section));
-        result.removeIf(request -> !request.getCountry().contains(country));
 
         model.addAttribute("requests", result);
         LoginController.addToModelAuthorityAttributes(model, principal, userRepo);
