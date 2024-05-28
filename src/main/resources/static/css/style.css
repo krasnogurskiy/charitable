@@ -427,7 +427,7 @@ footer{
 .disaster-button-home{
   font-family: "GilroySemiBold"; 
   text-align: center;
-  background-image: url(/img/disasters_blured.jpg);
+  background-image: url(/img/military_blured.jpg);
   background-position: 50% 65%;
   background-size: 130%;
   border-radius: 33.96px;
@@ -440,7 +440,7 @@ footer{
   transition: 0.3s;
 }
 .disaster-button-home:hover{
-  background-image: url(/img/disasters.jpg);
+  background-image: url(/img/military.jpg);
   background-size: 120%;
   color: #FFFFFF;
   font-size: 32px;

@@ -343,7 +343,8 @@ public class User implements UserDetails {
             }
         }
         if(!this.achievements.contains(Achievement.DISASTER)) {
-            if (currDon.getRequest().getSection().equals("Disaster")) {
+            // check
+            if (currDon.getRequest().getSection().equals("Military")) {
                 obtainedAch.add(Achievement.DISASTER);
                 this.achievements.add(Achievement.DISASTER);
             }

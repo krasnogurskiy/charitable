@@ -36,7 +36,7 @@
         <div class="category-wrapper-home">
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Disaster&country=">
-                    <p class="disaster-button-home">Disaster</p>
+                    <p class="disaster-button-home">Military</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">
