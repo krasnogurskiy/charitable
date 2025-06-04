@@ -41,7 +41,7 @@
                             <span class="editspan">
 
                                 <img src="/img/lightedit.svg" alt="">
-                                <a href="#">Upload photo</a>
+                                <a href="#">${springMacroRequestContext.getMessage("upl.message")!"[відсутнє повідомлення]"}</a>
                             </span>
 
                             <input type='file' name="file" class="editimg"/>
@@ -54,11 +54,11 @@
                                 <div class="name-role edt">
                                     <div class="names">
                                         <div class = "name1">
-                                    <p class="lighttxt">Name</p>
+                                    <p class="lighttxt">${springMacroRequestContext.getMessage("name1.message")!"[відсутнє повідомлення]"}</p>
                                     <input type="text" name="firstName" id="name" placeholder="Edit name" value="${userObj.firstName}">
                                         </div>
                                         <div class = "name2">
-                                            <p class="lighttxt">Surname</p>
+                                            <p class="lighttxt">${springMacroRequestContext.getMessage("surname1.message")!"[відсутнє повідомлення]"}</p>
                                             <input type="text" name="surname" id="name" placeholder="Edit surname" value="${userObj.surname}">
                                         </div>
                                     </div>
@@ -78,7 +78,7 @@
             <div class="bottom-section">
                 <div class="create_proj">
                     <div class="basicinf">
-                        <p class="h-text ">Edit your password:</p>
+                        <p class="h-text ">${springMacroRequestContext.getMessage("editpas.message")!"[відсутнє повідомлення]"}</p>
                         <div class="pr_name">
                             <div class="proj_name">
                                 <input type="password" name="" id="" placeholder="Enter old password">

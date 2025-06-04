@@ -8,17 +8,17 @@
 <div class="content">
     <div class="wraplog">
         <div class="log">
-            <p class="h-text">Sign In to Charitable</p>
+            <p class="h-text">${springMacroRequestContext.getMessage("title1.message")!"[відсутнє повідомлення]"}</p>
             <form action="/login" class="login"  method="post">
-                <input type="text" name="username" placeholder="Enter your e-mail"/> <#--id="email" placeholder="Enter your e-mail"-->
-                <input type="password" name="password" placeholder="Enter your password"/> <!--id="password" placeholder="Enter your password">-->
+                <input type="text" name="username" placeholder="${springMacroRequestContext.getMessage("email.message")!"[відсутнє повідомлення]"}"/> <#--id="email" placeholder="Enter your e-mail"-->
+                <input type="password" name="password" placeholder="${springMacroRequestContext.getMessage("password1.message")!"[відсутнє повідомлення]"}"/> <!--id="password" placeholder="Enter your password">-->
                 <#-- <input type="hidden" name = "_csrf" value="${_csrf.token}"/>-->
-                <input type="submit" style="cursor:pointer;" value="Sign In"/>
+                <input type="submit" style="cursor:pointer;" value="${springMacroRequestContext.getMessage("signin.message")!"[відсутнє повідомлення]"}"/>
             </form>
             <#if errorMessage??>
-                <p class="error">The e-mail or password is incorrect!</p>
+                <p class="error">${springMacroRequestContext.getMessage("error1.message")!"[відсутнє повідомлення]"}</p>
             </#if>
-            <p>Don't have an account? <span class="cl"><a href="/registration">Sign Up!</a></span></p>
+            <p>${springMacroRequestContext.getMessage("noaccount.message")!"[відсутнє повідомлення]"} <span class="cl"><a href="/registration">${springMacroRequestContext.getMessage("signup.message")!"[відсутнє повідомлення]"}</a></span></p>
         </div>
         </div>
         <@c.footer></@c.footer>

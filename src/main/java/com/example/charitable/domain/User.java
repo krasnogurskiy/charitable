@@ -210,7 +210,7 @@ public class User implements UserDetails {
             this.monthDonations += donationList.get(i).getDonatedSum();
         }
     }
-    private void setDonationsByMonths(DonationRepo donationRepo) // МАКСИМАЛЬНО ЕБАНУТЫЙ АЛГОРИТМ, НО ИДИТЕ НАХУЙ 3 ЧАСА НОЧИ ЕБАНЫЕ СУНДУКИ
+    private void setDonationsByMonths(DonationRepo donationRepo)
     {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Timestamp tmp = new Timestamp(System.currentTimeMillis());

@@ -13,47 +13,47 @@
 <@c.body isLogged isVerified>
 
     <div class="content req">
-        <p class="maintxtreq helpr">All help requests</p>
+        <p class="maintxtreq helpr">${springMacroRequestContext.getMessage("allrequests.message")!"[відсутнє повідомлення]"}</p>
         <#if buttonPressed??>
             <#assign recent = buttonPressed == "recent">
             <#assign mostPopular = buttonPressed == "most-popular">
             <#assign almostCollected = buttonPressed == "almost-collected">
             <div class="myBtnContainer">
-                <button class="btn ${recent?then('active', '')}"><a href="/requests/recent">Recent</a></button>
-                <button class=" btn ${mostPopular?then('active', '')}"><a href="/requests/most-popular">Most Popular</a></button>
-                <button class="btn ${almostCollected?then('active', '')}"><a href="/requests/almost-collected">Almost collected</a></button>
+                <button class="btn ${recent?then('active', '')}"><a href="/requests/recent">${springMacroRequestContext.getMessage("recent.message")!"[відсутнє повідомлення]"}</a></button>
+                <button class=" btn ${mostPopular?then('active', '')}"><a href="/requests/most-popular">${springMacroRequestContext.getMessage("popular.message")!"[відсутнє повідомлення]"}</a></button>
+                <button class="btn ${almostCollected?then('active', '')}"><a href="/requests/almost-collected">${springMacroRequestContext.getMessage("almostcollected.message")!"[відсутнє повідомлення]"}</a></button>
             </div>
         <#else>
             <div class="myBtnContainer">
-                <button class="btn"><a href="/requests/recent">Recent</a></button>
-                <button class=" btn"><a href="/requests/most-popular">Most Popular</a></button>
-                <button class="btn"><a href="/requests/almost-collected">Almost collected</a></button>
+                <button class="btn"><a href="/requests/recent">${springMacroRequestContext.getMessage("recent.message")!"[відсутнє повідомлення]"}</a></button>
+                <button class=" btn"><a href="/requests/most-popular">${springMacroRequestContext.getMessage("popular.message")!"[відсутнє повідомлення]"}</a></button>
+                <button class="btn"><a href="/requests/almost-collected">${springMacroRequestContext.getMessage("almostcollected.message")!"[відсутнє повідомлення]"}</a></button>
             </div>
         </#if>
         <div class=" filters">
             <div class="reqrow">
-                <p class="filt">Filters</p>
+                <p class="filt">${springMacroRequestContext.getMessage("filters.message")!"[відсутнє повідомлення]"}</p>
                 <img src="img/imgfilter.svg" alt="" class="open">
             </div>
             <form action="/requests/filter" class="hide">
-                <input type="search" name="title" placeholder="Enter your request" class="innersearch">
+                <input type="search" name="title" placeholder="${springMacroRequestContext.getMessage("searchplaceholder.message")!"[відсутнє повідомлення]"}" class="innersearch">
 
                 <div class="demo">
                     <p>
-                        <label for="percent">The amount needed:</label>
+                        <label for="percent">${springMacroRequestContext.getMessage("amneed.message")!"[відсутнє повідомлення]"}</label>
                         <input type="text" id="percent" class="numbers" />
                     </p>
                     <div id="slider-range2"></div>
                 </div>
                 <div class="demo">
                     <p>
-                        <label for="amount">Percent collected: </label>
+                        <label for="amount">${springMacroRequestContext.getMessage("percentcollected.message")!"[відсутнє повідомлення]"} </label>
                         <input type="text" id="amount" class="numbers" />
                     </p>
                     <div id="slider-range"></div>
                 </div>
                 <select name="section" id="">
-                    <option value="">All categories</option>
+                    <option value="">${springMacroRequestContext.getMessage("allcategories.message")!"[відсутнє повідомлення]"}</option>
                     <#list sections as section>
                         <option value="${section}">${section}</option>
                     </#list>
@@ -64,7 +64,7 @@
 <#--                        <option value="${country}">${country}</option>-->
 <#--                    </#list>-->
 <#--                </select>-->
-                <button class="btn active">Apply filters</button>
+                <button class="btn active">${springMacroRequestContext.getMessage("applyfilters.message")!"[відсутнє повідомлення]"}</button>
             </form>
         </div>
         <div class="requests" id="requests">
@@ -82,12 +82,12 @@
                                         <div class="rs">${item.city}, ${item.country}</div>
                                     </div>
                                 </div>
-                                <p class="raisedof">Raised <span>$${item.getCollectedSum()} of $${item.getRequiredSum()}</span></p>
+                                <p class="raisedof">${springMacroRequestContext.getMessage("raised.message")!"[відсутнє повідомлення]"} <span>$${item.getCollectedSum()} ${springMacroRequestContext.getMessage("of1.message")!"[відсутнє повідомлення]"} $${item.getRequiredSum()}</span></p>
                             </div>
                             <div class="rb-desc">${item.getDescription()}</div>
                             <div class="percentleft">
                                 <div class="prcnt">${(item.getCollectedSum() / item.getRequiredSum() * 100)?string("0")}%</div>
-                                <div class="leftto">$${item.requiredSum - item.getCollectedSum()} left</div>
+                                <div class="leftto">$${item.requiredSum - item.getCollectedSum()} ${springMacroRequestContext.getMessage("left.message")!"[відсутнє повідомлення]"}</div>
                             </div>
                         </div>
                     </div>

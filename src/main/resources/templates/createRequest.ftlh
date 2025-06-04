@@ -15,10 +15,10 @@
 <@c.body true true>
     <div class="content_crtpr">
 
-        <p class="maintxt">Create request for help</p>
+        <p class="maintxt">${springMacroRequestContext.getMessage("createreq.message")!"[відсутнє повідомлення]"}</p>
         <form action="/upload-image" class="dropzone needsclick dz-clickable" id="demo-upload" enctype="multipart/form-data" method="POST">
             <div class="dz-default dz-message">
-                <button class="dz-button" type = "button" onchange="updateSize()">Drag & drop photos here</button>
+                <button class="dz-button" type = "button" onchange="updateSize()">${springMacroRequestContext.getMessage("drag.message")!"[відсутнє повідомлення]"}</button>
                <#-- <input type="hidden" name = "_csrf" value="${_csrf.token}"/>-->
             </div>
         </form>
@@ -30,37 +30,37 @@
                 <div class="create_pr_wrap">
                     <div class="create_proj">
                         <div class="basicinf">
-                            <p class="h-text ">Basic information:</p>
+                            <p class="h-text ">${springMacroRequestContext.getMessage("basic.message")!"[відсутнє повідомлення]"}</p>
                             <div class="pr_name">
                                 <div class="proj_name">
                                     <#--<input type="text" name="name" id="name" placeholder="Project name">-->
                                     <@spring.bind "request.title"/>
-                                    <input id="name" value="" type="text" name="${spring.status.expression}" placeholder="Request title">
+                                    <input id="name" value="" type="text" name="${spring.status.expression}" placeholder="${springMacroRequestContext.getMessage("reqtitle.message")!"[відсутнє повідомлення]"}">
                                 </div>
                                 <@form.showErrors "<br>","error"/>
                                 <div class = "details_wrap">
                                     <@spring.bind "request.description"/>
-                                    <textarea id="details" name="${spring.status.expression}" class="validate[required,length[6,300]] details" placeholder="Write short description" rows="7"></textarea>
+                                    <textarea id="details" name="${spring.status.expression}" class="validate[required,length[6,300]] details" placeholder="${springMacroRequestContext.getMessage("writes.message")!"[відсутнє повідомлення]"}" rows="7"></textarea>
                                 </div>
                                 <@form.showErrors "<br>","error"/>
                             </div>
                         </div>
 
                         <div class="moreinf">
-                            <p class="h-text ">Additional details:</p>
+                            <p class="h-text ">${springMacroRequestContext.getMessage("adddet.message")!"[відсутнє повідомлення]"}</p>
 
                             <div class="wrap_select">
                                 <!-- в дів нижче class="select" -->
                                 <@spring.bind "request.section"/>
                                 <div class="categ_slct">
                                     <select id="slct" name="${spring.status.expression}">
-                                        <option selected disabled>Choose the category</option>
-                                        <option value="Military">Military</option>
-                                        <option value="Education">Education</option>
-                                        <option value="Hunger">Hunger</option>
-                                        <option value="Environment">Environment</option>
-                                        <option value="Health">Health</option>
-                                        <option value="Animals">Animals</option>
+                                        <option selected disabled>${springMacroRequestContext.getMessage("choose.message")!"[відсутнє повідомлення]"}</option>
+                                        <option value="Military">${springMacroRequestContext.getMessage("military.message")!"[відсутнє повідомлення]"}</option>
+                                        <option value="Education">${springMacroRequestContext.getMessage("education.message")!"[відсутнє повідомлення]"}</option>
+                                        <option value="Hunger">${springMacroRequestContext.getMessage("hunger.message")!"[відсутнє повідомлення]"}</option>
+                                        <option value="Environment">${springMacroRequestContext.getMessage("environment.message")!"[відсутнє повідомлення]"}</option>
+                                        <option value="Health">${springMacroRequestContext.getMessage("health.message")!"[відсутнє повідомлення]"}</option>
+                                        <option value="Animals">${springMacroRequestContext.getMessage("animals.message")!"[відсутнє повідомлення]"}</option>
                                     </select>
                                     <@form.showErrors "<br>","error"/>
                                 </div>
@@ -95,7 +95,7 @@
 
 
 
-                            <p class="h3-text ">The amount of money <br> to be collected:</p>
+                            <p class="h3-text ">${springMacroRequestContext.getMessage("amount.message")!"[відсутнє повідомлення]"} <br> ${springMacroRequestContext.getMessage("tobe.message")!"[відсутнє повідомлення]"}</p>
                             <div class="create_sum">
                                 <@spring.bind "request.requiredSum"/>
                                 <input type='number' class="currency_input" placeholder="" value="500.0" min="0.0" name="${spring.status.expression}">
@@ -111,14 +111,14 @@
 
             <div class="wrapview">
                 <a>
-                    <input type="submit" value="Create project" class="button_proj">
+                    <input type="submit" value="${springMacroRequestContext.getMessage("createp.message")!"[відсутнє повідомлення]"}" class="button_proj">
                     <#--<input class="button_proj" type="submit" value="Create project">-->
                 </a>
             </div>
 
             <div class="wrapview">
                 <a href="/main" id = "cancelButton">
-                    <div class="cancel">Cancel</div>
+                    <div class="cancel">${springMacroRequestContext.getMessage("canc.message")!"[відсутнє повідомлення]"}</div>
                 </a>
             </div>
 

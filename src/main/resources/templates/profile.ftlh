@@ -28,7 +28,7 @@
                         <span class="editspan">
                             <#if isOwnProfile>
                             <img src="/img/edit.svg" alt="">
-                            <a href="/profile/edit">Edit profile</a>
+                            <a href="/profile/edit">${springMacroRequestContext.getMessage("editP.message")!"[відсутнє повідомлення]"}</a>
                             </#if>
                         </span>
                 </div>
@@ -46,7 +46,7 @@
                         </div>
                         <#if !isVerified>
                             <#if isOwnProfile>
-                                <div class="verify-button"><a href="/profile/upgradeForm"><div class="inner-ver">Upgrade your profile</div></a></div>
+                                <div class="verify-button"><a href="/profile/upgradeForm"><div class="inner-ver">${springMacroRequestContext.getMessage("upgP.message")!"[відсутнє повідомлення]"}</div></a></div>
                             </#if>
                         </#if>
                     </div>
@@ -61,8 +61,8 @@
                     <div class="ach animal"></div>
                     <div class="ach topweek"></div>
                     <div class="ach education"></div>-->
-                        <#if isOwnProfile><div class="seeall"><a href="/profile/achievements">See all</a></div>
-                        <#else><div class="seeall"><a href="/profile/achievements/${userObj.id}">See all</a></div></#if>
+                        <#if isOwnProfile><div class="seeall"><a href="/profile/achievements">${springMacroRequestContext.getMessage("seeAll.message")!"[відсутнє повідомлення]"}</a></div>
+                        <#else><div class="seeall"><a href="/profile/achievements/${userObj.id}">${springMacroRequestContext.getMessage("seAll.message")!"[відсутнє повідомлення]"}</a></div></#if>
 
                 </div>
                 </#if>
@@ -74,7 +74,7 @@
                 <div class = "overall">
                     <div class="ab-pr">
                         <div class="total">
-                            <p class="lighttxt">Total donated</p>
+                            <p class="lighttxt">${springMacroRequestContext.getMessage("total.message")!"[відсутнє повідомлення]"}</p>
                             <p class="maintxtprof suma">$ ${userObj.getTotalDonations()}</p>
                         </div>
                     </div>
@@ -84,11 +84,11 @@
                         <p class="maintxtprof mb0">+ $ ${userObj.getTodayDonations()}</p>
                     </div>-->
                     <div class="week">
-                        <p class="lighttxt">This week</p>
+                        <p class="lighttxt">${springMacroRequestContext.getMessage("thisweek.message")!"[відсутнє повідомлення]"}</p>
                         <p class="maintxtprof mb0">+ $ ${userObj.getWeekDonations()}</p>
                     </div>
                     <div class="month">
-                        <p class="lighttxt">This month</p>
+                        <p class="lighttxt">${springMacroRequestContext.getMessage("thismonth.message")!"[відсутнє повідомлення]"}</p>
                         <p class="maintxtprof mb0">+ $ ${userObj.getMonthDonations()}</p>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                     <div class="irow">
                         <p class="txtinfo">${userObj.username}</p>
 <#--                        <p class="txtinfo"><#if userObj.country?has_content>${userObj.city}, ${userObj.country}<#else>No geo specified</#if></p>-->
-                        <p class="txtinfo">Joined ${userObj.timestamp?date}</p>
+                        <p class="txtinfo">${springMacroRequestContext.getMessage("join.message")!"[відсутнє повідомлення]"} ${userObj.timestamp?date}</p>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
             <div class="bottom-section">
                 <div class="prwraprecent">
                     <div class="prrecent">
-                        <div class="calls pad">Last calls for help</div>
+                        <div class="calls pad">${springMacroRequestContext.getMessage("lcalls.message")!"[відсутнє повідомлення]"}</div>
 
                         <#if allReq?has_content>
                             <#list allReq as req>
@@ -123,13 +123,13 @@
                                 </div>
                             </#list>
                         <#else>
-                            <p class="description">No request has been created</p>
+                            <p class="description">${springMacroRequestContext.getMessage("noreq.message")!"[відсутнє повідомлення]"}</p>
                         </#if>
                     </div>
                 </div>
 
                 <div class="activity">
-                    <div class="calls">Activity</div>
+                    <div class="calls">${springMacroRequestContext.getMessage("act.message")!"[відсутнє повідомлення]"}</div>
                     <div id="top_x_div"></div>
                 </div>
                 </div>
@@ -137,15 +137,15 @@
                 <div class="bottom-section">
                     <div class="prwraprecent">
                         <div class="prrecent ph">
-                            <div class="calls">About user</div>
+                            <div class="calls">${springMacroRequestContext.getMessage("aboutu.message")!"[відсутнє повідомлення]"}</div>
                             <div class="user-row">${userObj.username}</div>
 <#--                            <div class="user-row"><#if userObj.country?has_content>${userObj.city}, ${userObj.country}<#else>No geo specified</#if></div>-->
-                            <div class="user-row">Joined ${userObj.timestamp?date}</div>
+                            <div class="user-row">${springMacroRequestContext.getMessage("join.message")!"[відсутнє повідомлення]"} ${userObj.timestamp?date}</div>
                         </div>
                     </div>
 
                     <div class="activity">
-                    <div class="calls">Activity</div>
+                    <div class="calls">${springMacroRequestContext.getMessage("act.message")!"[відсутнє повідомлення]"}</div>
                     <div id="top_x_div"></div>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
 
         function drawStuff() {
             var data = new google.visualization.arrayToDataTable([
-                ['Donation activity by months', '$'],
+                ['${springMacroRequestContext.getMessage("donact.message")!"[відсутнє повідомлення]"}', '$'],
                 ['Jan', Number(${userObj.getDonationsByMonths(0)?c})],
                 ['Feb', Number(${userObj.getDonationsByMonths(1)?c})],
                 ['Mar', Number(${userObj.getDonationsByMonths(2)?c})],

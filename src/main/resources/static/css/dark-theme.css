@@ -1,0 +1,95 @@
+body{
+    font-family: "GilroyRegular"!important;
+    margin: 0;
+    background-color: #00095b;
+    color: white;
+}
+.home-card-wrapper{
+
+    background-color: #00095b;
+}
+header{
+    background-color: #0b103d;
+}
+.menu-item{
+    background-color: #0b103d;
+}
+
+a{
+    color: white;
+}
+p{
+    color: white;
+}
+
+.plus:after {
+    color: white;
+}
+
+.donate-button-home{
+    background-color: #3f49a2;
+}
+.home-card{
+    box-shadow: 0px 0px 31.19px rgba(255, 255, 255, 0.15), 0px 5.77px 27.72px rgba(255, 255, 255, 0.17);
+}
+
+.header-text-home-2{
+    color: white;
+}
+
+
+/*requests*/
+.rb-desc{
+    color: #bdbdbd;
+}
+.ls{
+    color: #bdbdbd;
+}
+.rs{
+    color: #bdbdbd;
+}
+.btn a{
+    color: #7692FF;
+}
+.request-block {
+    box-shadow: 0px 0px 31.19px rgba(255, 255, 255, 0.1), 0px 5.77px 27.72px rgba(1, 1, 255, 0.1);
+}
+
+/* details */
+.percentage{
+    color: white;
+}
+.description{
+    color: #bdbdbd;
+}
+.date{
+    color: #bdbdbd;
+}
+.organizer{
+    color: white;
+}
+.percentage{
+    color: #0288D1;
+}
+
+/* profile */
+
+.lighttxt{
+    color: #bdbdbd;
+}
+
+/* hamburger*/
+.nav-toggle{
+    color: #bdbdbd;
+}
+/* theme */
+
+
+
+.theme-switch {
+    background-color: #1f2937;
+}
+
+.theme-switch .toggle-circle {
+    transform: translateX(30px); /* рух кружечка вправо */
+}

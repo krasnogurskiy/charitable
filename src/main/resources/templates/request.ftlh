@@ -52,8 +52,8 @@
 
 
             <div class="progress">
-                <p class="ac pr">Progress $${request.getCollectedSum()?floor}</p>
-                <p class="raised">Raised by <#assign result = 0> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} people</p>
+                <p class="ac pr">${springMacroRequestContext.getMessage("progress.message")!"[відсутнє повідомлення]"} $${request.getCollectedSum()?floor}</p>
+                <p class="raised">${springMacroRequestContext.getMessage("raisedby.message")!"[відсутнє повідомлення]"} <#assign result = 0> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} people</p>
                 <!-- <img src="..//static/img/diag.png" alt="" class="wa"> -->
                 <div id="donutchart" style="width: 100%; height: 300px;"></div>
                 <div class="percentage"><#if (request.getCollectedSum() / request.getRequiredSum() * 100) < 1> ${(request.getCollectedSum() / request.getRequiredSum() * 100)?ceiling} </#if> <#if 1 < (request.getCollectedSum() / request.getRequiredSum() * 100) > ${(request.getCollectedSum() / request.getRequiredSum() * 100)?floor} </#if>%</div>
@@ -87,7 +87,7 @@
                         <div class="person">
                             <div class="left">
                                 <div class="box4 olbox"></div>
-                                <div class="name">Others</div>
+                                <div class="name">${springMacroRequestContext.getMessage("others.message")!"[відсутнє повідомлення]"}</div>
                             </div>
                             <div class="summ">$${request.getCollectedSum() - top_donate}</div>
                         </div>
@@ -97,13 +97,13 @@
                     <#if request.active>
                     <a href="/payment/${request.id}">
                         <div class="button">
-                            <p>Become a sponsor</p>
+                            <p>${springMacroRequestContext.getMessage("sponsor.message")!"[відсутнє повідомлення]"}</p>
                         </div>
                     </a>
                     <#else>
                     <a href="">
                         <div class="button">
-                            <p>Completed!</p>
+                            <p>${springMacroRequestContext.getMessage("completed.message")!"[відсутнє повідомлення]"}</p>
                         </div>
                     </a>
                     </#if>
@@ -116,11 +116,11 @@
                             <div class="avatar"></div>
                             <div class="txtinfo">
                                 <div class="nameinfo">${user.getFirstName() + " " + user.getSurname()}</div>
-                                <div class="organizer">Organizer</div>
+                                <div class="organizer">${springMacroRequestContext.getMessage("organizer.message")!"[відсутнє повідомлення]"}</div>
                             </div>
                         </div>
                         <a href="/profile/${user.id}">
-                            <div class="contact">View profile</div>
+                            <div class="contact">${springMacroRequestContext.getMessage("viewprofile.message")!"[відсутнє повідомлення]"}</div>
                         </a>
                     </div>
                     <div class="date">
@@ -153,10 +153,10 @@
 
             <div class="wraprecent">
                 <div class="recent">
-                    <p class="h-text">Recent donations</p>
+                    <p class="h-text">${springMacroRequestContext.getMessage("recentdonations.message")!"[відсутнє повідомлення]"}</p>
                     <#assign counter = 0>
                     <#list request.getRecentDonate() as person>
-                        <#assign donation_title = "View all">
+                        <#assign donation_title = "View All">
                         <#assign href = "/request/donations/${request.id}">
                         <#if counter < 5>
                             <div class="person aic">
@@ -169,7 +169,7 @@
                         </#if>
                         <#assign  counter++>
                     <#else>
-                        <p class="description">No donation made yet</p>
+                        <p class="description">${springMacroRequestContext.getMessage("nodonations.message")!"[відсутнє повідомлення]"}</p>
                         <#assign donation_title = "Become the first one">
                         <#assign href = "/payment/${request.id}">
                     </#list>

@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements UserDetailsService {
-    //@Autowired - old method
-
     private final UserRepo userRepo;
     public UserService(UserRepo userRepo) {
         this.userRepo = userRepo;

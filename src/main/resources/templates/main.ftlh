@@ -5,10 +5,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <@c.head>
+    <#--   <link id="theme-link" rel="stylesheet" href="/css/light-theme.css">
+    -->
+
     <script class="jsbin" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </@c.head>
 <@c.body isLogged isVerified>
 <div class="content">
+    <#--  <button id="toggle-theme-btn">Toggle Theme</button> тема -->
+
     <div class="w100">
 
 
@@ -18,13 +23,13 @@
         <div class="img-wrapper-home">
 
             <div class="main-text-home">
-                <p>Make a change</p>
+                <p>${springMacroRequestContext.getMessage("make1.message")!"[відсутнє повідомлення]"}</p>
             </div>
 
             <div class="donate-button-wrap-home">
                 <div></div>
                 <a href="/requests" class="donate-button-home">
-                    <p>Donate</p>
+                    <p>${springMacroRequestContext.getMessage("donate.message")!"[відсутнє повідомлення]"}</p>
                 </a>
                 <div></div>
             </div>
@@ -32,42 +37,42 @@
         </div>
 
 
-        <p class="header-text-home-2">Categories</p>
+        <p class="header-text-home-2">${springMacroRequestContext.getMessage("categories.message")!"[відсутнє повідомлення]"}</p>
         <div class="category-wrapper-home">
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Military&country=">
-                    <p class="military-button-home">Military</p>
+                    <p class="military-button-home">${springMacroRequestContext.getMessage("military.message")!"[відсутнє повідомлення]"}</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Education&country=">
-                    <p class="education-button-home">Education</p>
+                    <p class="education-button-home">${springMacroRequestContext.getMessage("education.message")!"[відсутнє повідомлення]"}</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Hunger&country=">
-                    <p class="hunger-button-home">Hunger</p>
+                    <p class="hunger-button-home">${springMacroRequestContext.getMessage("hunger.message")!"[відсутнє повідомлення]"}</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Environment&country=">
-                    <p class="environment-button-home">Environment</p>
+                    <p class="environment-button-home">${springMacroRequestContext.getMessage("environment.message")!"[відсутнє повідомлення]"}</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Health&country=">
-                    <p class="health-button-home">Health</p>
+                    <p class="health-button-home">${springMacroRequestContext.getMessage("health.message")!"[відсутнє повідомлення]"}</p>
                 </a>
             </div>
             <div class="category-button-wrapper-home">
                 <a href="/requests/filter?title=&section=Animals&country=">
-                    <p class="animals-button-home">Animals</p>
+                    <p class="animals-button-home">${springMacroRequestContext.getMessage("animals.message")!"[відсутнє повідомлення]"}</p>
                 </a>
             </div>
         </div>
 
         <p class="header-text-home-2">
-            Almost got it &#128526;
+            ${springMacroRequestContext.getMessage("gotit.message")!"[відсутнє повідомлення]"}
         </p>
 
 

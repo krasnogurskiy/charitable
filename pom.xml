@@ -32,6 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <!--бібліотека для рендерингу-->
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
         <dependency>

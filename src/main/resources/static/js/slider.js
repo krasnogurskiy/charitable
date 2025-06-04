@@ -40,8 +40,8 @@ $(function() {
     var options = {
         range: true,
         min: 0,
-        max: 9999,
-        values: [0, 9999],
+        max: 99999,
+        values: [0, 99999],
         slide: function(event, ui) {
             var min = ui.values[0],
                 max = ui.values[1];
