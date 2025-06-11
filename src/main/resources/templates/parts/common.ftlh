@@ -156,7 +156,6 @@
             const url = new URL(window.location.href);
             url.searchParams.set("lang", selectedLang);
 
-            // Перехід на оновлений URL
             window.location.href = url.toString();
         });
 
