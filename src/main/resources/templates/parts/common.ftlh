@@ -1,3 +1,4 @@
+Андрій, [22.06.2025 20:47]
 <#macro head>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,11 +15,8 @@
         <meta name="msapplication-config" content="/img/icons/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
 
-
         <link href="/css/sss.css" rel="stylesheet" >
         <link href="/css/style.css" rel="stylesheet"/>
-
-        <#--   theme   -->
         <link id="theme-link" rel="stylesheet" href="/css/light-theme.css">
 
         <script src="/js/scroll.js"></script>
@@ -32,47 +30,19 @@
     <div class="wrap-header">
         <header>
             <form id="demo-2">
-<#--
-                <input type="search" placeholder="Search">
--->
-<#--
-                <input type="search" name="title" placeholder="${springMacroRequestContext.getMessage("searchplaceholder.message")!"[відсутнє повідомлення]"}" class="innersearch">
--->
-
                 <a href="/main" class="logotype">Charitable</a>
 
-                <#-- theme  -->
                 <button id="toggle-theme-btn" class="theme-switch">
                     <span class="icon sun">☀️</span>
                     <span class="icon moon">🌙</span>
                     <span class="toggle-circle"></span>
                 </button>
 
-                <#assign lang = (parameters.lang[0])!'en'>
-
-                <select id="language-select" class="language-select">
-                    <option value="en" <#if lang == "en">selected</#if>>EN</option>
-                    <option value="uk" <#if lang == "uk">selected</#if>>UA</option>
+                <select id="language-select" class="language-select" data-current-lang="${.locale?string}">
+                    <option value="en" <#if .locale?string?starts_with("en")>selected</#if>>EN</option>
+                    <option value="uk" <#if .locale?string?starts_with("uk")>selected</#if>>UA</option>
                 </select>
-
-
-
             </form>
-
-
-
-
-
-
-
-
-<#--
-
-<h1>${springMacroRequestContext.getMessage("welcome.message")!"[відсутнє повідомлення]"}</h1>
--->
-
-
-
 
             <nav class="nav-collapse">
                 <ul>
@@ -80,7 +50,8 @@
                         <li class="menu-item pr0">
                             <a href="/create-request">
                                 <div class="plus">+</div><span class="mobile">Create a request</span>
-                            </a></li>
+                            </a>
+                        </li>
                     </#if>
                     <li class="menu-item"><a href="/requests">${springMacroRequestContext.getMessage("requests.message")!"[відсутнє повідомлення]"}</a></li>
                     <#if isLogged>
@@ -89,16 +60,15 @@
                     <#else>
                         <li class="menu-item pr0"><a href="/login">${springMacroRequestContext.getMessage("login.message")!"[відсутнє повідомлення]"}</a></li>
                     </#if>
-               </ul>
+                </ul>
             </nav>
         </header>
     </div>
     <#nested>
     </body>
-
 </#macro>
 
-
+Андрій, [22.06.2025 20:47]
 <#macro footer>
     <footer>
         <div class="links">
@@ -124,16 +94,16 @@
     </footer>
 </#macro>
 
-
+<#--
 <#macro scripts>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="/js/responsive-nav.js"></script>
     <script src="/js/fixed-responsive-nav.js"></script>
 
     <script>
+        // Тема
         const toggleBtn = document.getElementById("toggle-theme-btn");
         const themeLink = document.getElementById("theme-link");
-
         if (toggleBtn && themeLink) {
             toggleBtn.addEventListener("click", () => {
                 const currentTheme = themeLink.getAttribute("href");
@@ -141,32 +111,91 @@
                 themeLink.setAttribute("href", newTheme);
                 localStorage.setItem("savedTheme", newTheme);
             });
-
-            // Load saved theme on page load
             const savedTheme = localStorage.getItem("savedTheme");
             if (savedTheme) {
                 themeLink.setAttribute("href", savedTheme);
             }
         }
     </script>
+
     <script>
-        document.getElementById("language-select").addEventListener("change", function () {
-            const selectedLang = this.value;
+        // Мова
+        const languageSelect = document.getElementById("language-select");
+        if (languageSelect) {
+            const urlParams = new URL(window.location.href).searchParams;
+            const urlLang = urlParams.get("lang");
+            const currentLang = urlLang || languageSelect.dataset.currentLang;
 
-            const url = new URL(window.location.href);
-            url.searchParams.set("lang", selectedLang);
+            languageSelect.value = currentLang;
 
-            window.location.href = url.toString();
-        });
+            languageSelect.addEventListener("change", function() {
+                const selectedLang = this.value;
+                const url = new URL(window.location.href);
+                url.searchParams.set("lang", selectedLang);
+                window.location.href = url.toString();
+            });
+        }
+    </script>
+    <#nested>
+</#macro>-->
 
-        // Встановлюємо правильне значення в селекті при завантаженні
-        window.addEventListener("DOMContentLoaded", () => {
-            const url = new URL(window.location.href);
-            const lang = url.searchParams.get("lang") || "en"; // за замовчуванням англійська
-            document.getElementById("language-select").value = lang;
-        });
+<#macro scripts>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="/js/responsive-nav.js"></script>
+    <script src="/js/fixed-responsive-nav.js"></script>
+
+    <script>
+        // Тема
+        const toggleBtn = document.getElementById("toggle-theme-btn");
+        const themeLink = document.getElementById("theme-link");
+        if (toggleBtn && themeLink) {
+            toggleBtn.addEventListener("click", () => {
+                const currentTheme = themeLink.getAttribute("href");
+                const newTheme = currentTheme.includes("light") ? "/css/dark-theme.css" : "/css/light-theme.css";
+                themeLink.setAttribute("href", newTheme);
+                localStorage.setItem("savedTheme", newTheme);
+            });
+            const savedTheme = localStorage.getItem("savedTheme");
+            if (savedTheme) {
+                themeLink.setAttribute("href", savedTheme);
+            }
+        }
     </script>
 
+    <script>
+        // Мова
+        const languageSelect = document.getElementById("language-select");
+        if (languageSelect) {
+            const urlParams = new URL(window.location.href).searchParams;
+            const urlLang = urlParams.get("lang");
+            const currentLang = urlLang || languageSelect.dataset.currentLang;
+            languageSelect.value = currentLang;
+
+            languageSelect.addEventListener("change", function() {
+                const selectedLang = this.value;
+                const url = new URL(window.location.href);
+                url.searchParams.set("lang", selectedLang);
+                window.location.href = url.toString();
+            });
+
+            // Додаємо lang до форм логіну та реєстрації
+            const loginForm = document.querySelector('form[action="/login"]');
+            const registrationForm = document.querySelector('form[action="/registration"]');
+
+            function updateFormLangAction(form) {
+                if (form) {
+                    const selectedLang = languageSelect.value;
+                    const actionUrl = new URL(form.action, window.location.origin);
+                    actionUrl.searchParams.set("lang", selectedLang);
+                    form.action = actionUrl.pathname + '?lang=' + selectedLang;
+                }
+            }
+
+            updateFormLangAction(loginForm);
+            updateFormLangAction(registrationForm);
+        }
+    </script>
 
     <#nested>
 </#macro>
+

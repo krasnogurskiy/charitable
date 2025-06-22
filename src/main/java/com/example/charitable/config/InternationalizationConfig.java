@@ -18,7 +18,8 @@ public class InternationalizationConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver slr = new CookieLocaleResolver();
-        slr.setDefaultLocale(Locale.ENGLISH); // або Locale("uk")
+        // slr.setDefaultLocale(Locale.ENGLISH); // або Locale("uk")
+        slr.setDefaultLocale(new Locale("uk"));
         return slr;
     }
 
@@ -26,6 +27,9 @@ public class InternationalizationConfig implements WebMvcConfigurer {
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang"); // дозволяє ?lang=uk
+/*
+        lci.setHttpMethods("GET", "POST"); // тимчас
+*/
         return lci;
     }
 

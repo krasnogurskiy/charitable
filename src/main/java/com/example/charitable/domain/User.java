@@ -26,11 +26,11 @@ public class User implements UserDetails {
     @NotBlank(message = "Field is required.")
     private String username; //email
 
-    @Pattern(regexp = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", message = "Not valid.")
+    @Pattern(regexp = "^[a-zA-ZА-Яа-яІіЇїЄє'\\-\\s]+$", message = "Not valid.")
     @NotBlank(message = "")
     private String firstName;
 
-    @Pattern(regexp = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", message = "Not valid.")
+    @Pattern(regexp = "^[a-zA-ZА-Яа-яІіЇїЄє'\\-\\s]+$", message = "Not valid.")
     @NotBlank(message = "")
     private String surname;
 

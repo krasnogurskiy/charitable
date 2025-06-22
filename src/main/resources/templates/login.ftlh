@@ -9,9 +9,10 @@
     <div class="wraplog">
         <div class="log">
             <p class="h-text">${springMacroRequestContext.getMessage("title1.message")!"[відсутнє повідомлення]"}</p>
-            <form action="/login" class="login"  method="post">
+            <form action="/login?lang=${.locale?string}" class="login" method="post">
                 <input type="text" name="username" placeholder="${springMacroRequestContext.getMessage("email.message")!"[відсутнє повідомлення]"}"/> <#--id="email" placeholder="Enter your e-mail"-->
                 <input type="password" name="password" placeholder="${springMacroRequestContext.getMessage("password1.message")!"[відсутнє повідомлення]"}"/> <!--id="password" placeholder="Enter your password">-->
+                <#-- <input type="hidden" name="lang" value="${.locale?string}"/>  <!-- мова &ndash;&gt;  -->
                 <#-- <input type="hidden" name = "_csrf" value="${_csrf.token}"/>-->
                 <input type="submit" style="cursor:pointer;" value="${springMacroRequestContext.getMessage("signin.message")!"[відсутнє повідомлення]"}"/>
             </form>

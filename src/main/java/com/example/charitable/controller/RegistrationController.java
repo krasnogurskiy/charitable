@@ -39,7 +39,7 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
-        String passwordPatter = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,20}$";
+        String passwordPatter = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+\\-={}\\[\\]:;\"'<>?,.]{8,20}$";
         Pattern pattern = Pattern.compile(passwordPatter);
         Matcher matcher = pattern.matcher(user.getPassword());
         if(!matcher.matches()){
