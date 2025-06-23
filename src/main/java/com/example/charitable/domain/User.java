@@ -22,15 +22,15 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Email(message = "Not valid.")
-    @NotBlank(message = "Field is required.")
+    @Email(message = "{notval.message}")
+    @NotBlank(message = "{fieldR.message}")
     private String username; //email
 
-    @Pattern(regexp = "^[a-zA-ZА-Яа-яІіЇїЄє'\\-\\s]+$", message = "Not valid.")
+    @Pattern(regexp = "^[a-zA-ZА-Яа-яІіЇїЄє'\\-\\s]+$", message = "{notval.message}")
     @NotBlank(message = "")
     private String firstName;
 
-    @Pattern(regexp = "^[a-zA-ZА-Яа-яІіЇїЄє'\\-\\s]+$", message = "Not valid.")
+    @Pattern(regexp = "^[a-zA-ZА-Яа-яІіЇїЄє'\\-\\s]+$", message = "{notval.message}")
     @NotBlank(message = "")
     private String surname;
 

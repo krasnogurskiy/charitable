@@ -11,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Locale;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import javax.validation.Validator;
 
 @Configuration
 public class InternationalizationConfig implements WebMvcConfigurer {
@@ -31,6 +33,12 @@ public class InternationalizationConfig implements WebMvcConfigurer {
         lci.setHttpMethods("GET", "POST"); // тимчас
 */
         return lci;
+    }
+    @Bean
+    public LocalValidatorFactoryBean getValidator() {
+        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+        bean.setValidationMessageSource(messageSource());
+        return bean;
     }
 
     @Override

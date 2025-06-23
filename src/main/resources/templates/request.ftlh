@@ -156,7 +156,7 @@
                     <p class="h-text">${springMacroRequestContext.getMessage("recentdonations.message")!"[відсутнє повідомлення]"}</p>
                     <#assign counter = 0>
                     <#list request.getRecentDonate() as person>
-                        <#assign donation_title = "View All">
+                        <#assign donation_title = springMacroRequestContext.getMessage("viewAll.message")?default("[відсутнє повідомлення]")>
                         <#assign href = "/request/donations/${request.id}">
                         <#if counter < 5>
                             <div class="person aic">
@@ -170,7 +170,7 @@
                         <#assign  counter++>
                     <#else>
                         <p class="description">${springMacroRequestContext.getMessage("nodonations.message")!"[відсутнє повідомлення]"}</p>
-                        <#assign donation_title = "Become the first one">
+                        <#assign donation_title = springMacroRequestContext.getMessage("firstOne.message")?default("[відсутнє повідомлення]")>
                         <#assign href = "/payment/${request.id}">
                     </#list>
                     <div class="wrapview">

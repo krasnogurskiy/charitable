@@ -18,12 +18,12 @@
 
 <@c.body isLogged isVerified>
 <div class="content req">
-    <p class="maintxtreq helpr back"><a href="/request/${request.id}">&#8592; go back </a></p>
+    <p class="maintxtreq helpr back"><a href="/request/${request.id}">&#8592; ${springMacroRequestContext.getMessage("goBack.message")!"[відсутнє повідомлення]"} </a></p>
     <div class="donations">
         <div class="thelist">
             <div class="wraprecent">
                 <div class="recent">
-                    <p class="h-text listof">List of donators to ${request.getTitle()}</p>
+                    <p class="h-text listof">${springMacroRequestContext.getMessage("historylist.message")!"[відсутнє повідомлення]"} ${request.getTitle()}</p>
                     <#list request.getRecentDonate() as person>
                         <div class="person aic">
                             <div class="left">
@@ -38,10 +38,10 @@
         </div>
         <div class="detailed">
             <div class="innerdet">
-                <p class="maintxtprof suma">$${request.getCollectedSum()} was raised</p>
-                <p class="lighttxt"><#assign result = 0> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} people donated</p>
+                <p class="maintxtprof suma">$${request.getCollectedSum()} ${springMacroRequestContext.getMessage("wraised.message")!"[відсутнє повідомлення]"}</p>
+                <p class="lighttxt"><#assign result = 0> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} ${springMacroRequestContext.getMessage("pdon.message")!"[відсутнє повідомлення]"}</p>
                 <a href="">
-                    <div class="button_proj">Respond to help</div>
+                    <div class="button_proj">${springMacroRequestContext.getMessage("resp.message")!"[відсутнє повідомлення]"}</div>
                 </a>
             </div>
         </div>
