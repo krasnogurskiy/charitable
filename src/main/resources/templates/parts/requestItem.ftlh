@@ -11,6 +11,7 @@
                     <p>${request.description}<#--Excepteur sunt eiusmod pariatur nulla consectetur adipisicing laborum voluptate commodo officia id. Nostrud amet ullamco id officia laboris.-->
                     </p>
                 </div>
+
                 <div class="home-card-stats">
                     <div class="home-card-stat">
                         <div class="home-card-value">${(request.collectedSum)?floor}$<#--3450$--></div>
