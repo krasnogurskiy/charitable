@@ -17,17 +17,17 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Size(min = 8, max = 50, message = "Length must be between {min} and {max} characters.")
+    @Size(min = 8, max = 50, message = "{lengm.message} {min} {land.message} {max} {lcharacter.message}")
     private String title;
-    @NotBlank(message = "Please choose the category.")
+    @NotBlank(message = "{chooscateg.message}")
     private String section;
 
-    @DecimalMin(value = "500.0", message = "Required sum must be at least {value}$.")
-    @DecimalMax(value = "100000.0", message = "Required sum is too big")
+    @DecimalMin(value = "500.0", message = "{minval.message} {value}$")
+    @DecimalMax(value = "100000.0", message = "{maxval.message}")
     private double requiredSum;
     private double collectedSum;
 
-    @Size(min = 20, max = 1000, message = "Length must be between {min} and {max} characters.")
+    @Size(min = 20, max = 1000, message = "{lengm.message} {min} {land.message} {max} {lcharacter.message}")
     private String description;
 
     @ManyToOne

@@ -11,24 +11,49 @@
 <@c.body isLogged isVerified>
 <div class="content req">
     <#if isOwnProfile>
-        <#assign achTitle = "Your achievements">
+        <#assign achTitle = springMacroRequestContext.getMessage("achievementsUr.message")!"[відсутнє повідомлення]">
         <#assign href = "/profile">
         <#else>
-            <#assign achTitle = "Achievements of ${userObj.firstName}">
+            <#assign achTitle = (springMacroRequestContext.getMessage("achievementsOf.message")! "[відсутнє повідомлення]") + " " + userObj.firstName>
             <#assign href = "/profile/${userObj.id}">
     </#if>
-    <p class="maintxtreq helpr back"><a href = ${href}>&#8592; go back</a></p>
+    <p class="maintxtreq helpr back"><a href = ${href}>&#8592; ${springMacroRequestContext.getMessage("goBack.message")!"[відсутнє повідомлення]"}</a></p>
     <p class="maintxtreq helpr">${achTitle}</p>
-    <div class="achievements">
+    <#--<div class="achievements">
 
-        <#list achievements as ach,ifGot>
+&lt;#&ndash;        <#list achievements as ach,ifGot>
         <div class="awrap ${ifGot}">
             <img src="/img/achievements/${ach.getSrc()}" class="round" alt="">
             <p class="${ach.getClassName()}"></p>
         </div>
+        </#list>&ndash;&gt;
+
+        <#list achievements as ach,ifGot>
+            <div class="awrap ${ifGot}" style="background-image: url('/img/achievements/${ach.getSrc()}');">
+                <img src="/img/achievements/${ach.getSrc()}" class="round" alt="${ach.name()}">
+                <span class="ach-text">
+      <@spring.message code="achievement.${ach.getClassName()}.message" />
+    </span>
+            </div>
         </#list>
 
+    </div>-->
+
+
+    <div class="achievements">
+        <#list achievements as ach,ifGot>
+            <div>
+                <div class="awrap ${ifGot}" style="background-image: url('/img/achievements/${ach.getSrc()}'); background-size: cover;">
+                    <img class="round" src="/img/achievements/${ach.getSrc()}" alt="${ach.name()}"/>
+                </div>
+                <div class="ach-text">
+                    <@spring.message code="achievement.${ach.getClassName()}.message" />
+                </div>
+            </div>
+        </#list>
     </div>
+
+
     <@c.footer></@c.footer>
 </div>
 <@c.scripts></@c.scripts>

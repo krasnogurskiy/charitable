@@ -66,7 +66,7 @@ public class CreateRequestController {
         imgBufferNames.clear();
         return "createRequest";
     }
-    @PostMapping("/create-request")
+/*    @PostMapping("/create-request")
     public String createRequest(@Valid Request request, BindingResult bindingResult, Principal principal, Model model){
         request.setCountry("Ukraine");
         request.setCity("Lviv");
@@ -88,7 +88,35 @@ public class CreateRequestController {
         }
 
         return "redirect:/main";
+    }*/
+
+    @PostMapping("/create-request")
+    public String createRequest(@Valid Request request, BindingResult bindingResult, Principal principal, Model model){
+        if (bindingResult.hasErrors()) {
+            for(String fileName: imgBufferNames){
+                awsService.deleteObject(S3Config.bucketName, fileName);
+            }
+            imgBufferNames.clear();
+            return "createRequest";
+        }
+
+        request.setCountry("Ukraine");
+        request.setCity("Lviv");
+        request.setState("Lvivsk'a oblast'");
+        request.setDefaultCollectedSum(0.0);
+        request.setUser(userRepo.findByUsername(principal.getName()));
+        request.setActive(true);
+        request.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        request.setImages(String.join(",", imgBufferNames));
+
+        System.out.println("\n\n\n\n\n\n\n" + request.getImages());
+
+        requestRepo.save(request);
+        imgBufferNames.clear();
+
+        return "redirect:/main";
     }
+
     @PostMapping(value = "/upload-image")
     public ResponseEntity<?> fileUpload(Request request, Principal principal, MultipartHttpServletRequest multipartHttpServletRequest) {
         Map<String, MultipartFile> fileMap = multipartHttpServletRequest.getFileMap();

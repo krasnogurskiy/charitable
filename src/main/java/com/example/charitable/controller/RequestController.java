@@ -120,7 +120,7 @@ public class RequestController {
         return "redirect:/main";
     }
 
-    // Do not load a css - pishow nahyu
+    //
     @GetMapping("/request/{id}")
     public String getRequest(@PathVariable String id, Model model, Principal principal) {
         int safe_id;
@@ -132,8 +132,8 @@ public class RequestController {
 
         Request request = requestRepo.findById(safe_id);
 
-        // we will add to collected sum in request table after some
-        // donation(so we don't need to count all collectedSum here)
+        //
+        //
         //request.setCollectedSum(donationRepo, safe_id);
         User user = request.getUser();
 
