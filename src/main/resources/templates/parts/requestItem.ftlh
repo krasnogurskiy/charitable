@@ -14,15 +14,15 @@
                 <div class="home-card-stats">
                     <div class="home-card-stat">
                         <div class="home-card-value">${(request.collectedSum)?floor}$<#--3450$--></div>
-                        <div class="home-card-type">raised</div>
+                        <div class="home-card-type">${springMacroRequestContext.getMessage("raised.message")!"[відсутнє повідомлення]"}</div>
                     </div>
                     <div class="home-card-stat border">
                         <div class="home-card-value">${((request.collectedSum/request.requiredSum)*100)?floor}%</div>
-                        <div class="home-card-type">progress</div>
+                        <div class="home-card-type">${springMacroRequestContext.getMessage("progress.message")!"[відсутнє повідомлення]"}</div>
                     </div>
                     <div class="home-card-stat">
                         <div class="home-card-value">${(request.requiredSum - request.collectedSum)?floor}$</div>
-                        <div class="home-card-type">left</div>
+                        <div class="home-card-type">${springMacroRequestContext.getMessage("left.message")!"[відсутнє повідомлення]"}</div>
                     </div>
                 </div>
 </div>

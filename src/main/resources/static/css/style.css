@@ -2969,14 +2969,15 @@ textarea::placeholder{
 .e .create_proj{
   padding-top: 10px;
 }
-.plus{
+
+/*.plus{
   background: #7B91F7;
   border-radius: 33.96px;
   padding: 0 12px;
   color: #ffffff;
 }
 .plus:after{
-  content: "Create request";
+  content: "";
   position: absolute;
   color: #000000;
   left: 0;
@@ -2985,13 +2986,44 @@ textarea::placeholder{
   z-index: -1;
 }
 .plus:hover:after{
-  content: "Create request";
+  content: "";
   position: absolute;
   left: -135px;
   transition: all 0.3s; 
   opacity: 1;
   z-index: -1;
+}*/
+.plus-link {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
+
+.plus {
+    background: #7B91F7;
+    border-radius: 33.96px;
+    padding: 0 12px;
+    color: #ffffff;
+}
+
+.plus-text {
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    transform: translateX(0);
+    transition: all 0.3s;
+    color: #000;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* При наведенні — від'їжджає вліво */
+.plus-link:hover .plus-text {
+    opacity: 1;
+    transform: translateX(-145px);
+}
+
+
 .js .nav-collapse{
   overflow: visible;
 }

@@ -47,11 +47,19 @@
             <nav class="nav-collapse">
                 <ul>
                     <#if isVerified>
-                        <li class="menu-item pr0">
+              <#--          <li class="menu-item pr0">
                             <a href="/create-request">
-                                <div class="plus">+</div><span class="mobile">Create a request</span>
+                                <div class="plus">+</div><span class="mobile">${springMacroRequestContext.getMessage("createReq1.message")!"[відсутнє повідомлення]"}</span>
+                            </a>
+                        </li>-->
+                        <li class="menu-item pr0">
+                            <a href="/create-request" class="plus-link">
+                                <div class="plus">+</div>
+                                <span class="plus-text">${springMacroRequestContext.getMessage("createReq1.message")!"[відсутнє повідомлення]"}</span>
+                                <span class="mobile">${springMacroRequestContext.getMessage("createReq1.message")!"[відсутнє повідомлення]"}</span>
                             </a>
                         </li>
+
                     </#if>
                     <li class="menu-item"><a href="/requests">${springMacroRequestContext.getMessage("requests.message")!"[відсутнє повідомлення]"}</a></li>
                     <#if isLogged>
