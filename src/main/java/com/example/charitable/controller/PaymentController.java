@@ -127,7 +127,17 @@ public class PaymentController {
         return "payment";
     }
 
+    private double convertToUSD(String currency, double amount) {
+        final double EXCHANGE_RATE = 41.41;
+        if ("UAH".equalsIgnoreCase(currency)) {
+            return Math.round((amount / EXCHANGE_RATE) * 100.0) / 100.0;
+        } else {
+            return amount;
+        }
+    }
 
+
+/*
     @RequestMapping(value = "/get-transaction-status", method = RequestMethod.POST)
     public String paymentPost(String data, Donation donation) throws JsonProcessingException {
         String decodedData = new String(Base64.decodeBase64(data.getBytes()));
@@ -142,8 +152,8 @@ public class PaymentController {
             donation.setRequest(requestRepo.findById(dataJson.get("product_category").asInt()));
             donation.setTimestamp(currentTime);
             donation.setOrder_id(dataJson.get("liqpay_order_id").asText());
-            /*donation.setStatus(dataJson.get("status").asText());
-            donation.setDonationsCount(String.valueOf(donationRepo.count()));*/
+            *//*donation.setStatus(dataJson.get("status").asText());
+            donation.setDonationsCount(String.valueOf(donationRepo.count()));*//*
             try{
             if(donationRepo.count()!=0){
                 Donation lastDon = donationRepo.findTopByOrderByIdDesc();
@@ -159,7 +169,47 @@ public class PaymentController {
         }
         Donation lastDon = donationRepo.findTopByOrderByIdDesc();
         return "redirect:/main/donation-successful/" + lastDon.getId();//dataJson.get("product_category").asInt()
+    }*/
+
+    @RequestMapping(value = "/get-transaction-status", method = RequestMethod.POST)
+    public String paymentPost(String data, Donation donation) throws JsonProcessingException {
+        String decodedData = new String(Base64.decodeBase64(data.getBytes()));
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode dataJson = mapper.readTree(decodedData);
+
+        // перевірка чи платіж успішний
+        if ("sandbox".equals(dataJson.get("status").asText())) {
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+
+            String currency = dataJson.get("currency").asText(); // "UAH" або "USD"
+            double originalAmount = dataJson.get("amount").asDouble();
+            double convertedAmount = convertToUSD(currency, originalAmount);
+
+            donation.setDonatedSum(convertedAmount);
+            donation.setUser(userRepo.findById(dataJson.get("product_description").asInt()));
+            donation.setRequest(requestRepo.findById(dataJson.get("product_category").asInt()));
+            donation.setTimestamp(currentTime);
+            donation.setOrder_id(dataJson.get("liqpay_order_id").asText());
+
+            try {
+                if (donationRepo.count() != 0) {
+                    Donation lastDon = donationRepo.findTopByOrderByIdDesc();
+                    if (!lastDon.getOrder_id().equals(donation.getOrder_id())) {
+                        donationRepo.save(donation);
+                    }
+                } else {
+                    donationRepo.save(donation);
+                }
+            } catch (Exception ex) {
+                // Логування або обробка помилки
+                ex.printStackTrace();
+            }
+        }
+
+        Donation lastDon = donationRepo.findTopByOrderByIdDesc();
+        return "redirect:/main/donation-successful/" + lastDon.getId();
     }
+
 
     @RequestMapping(value = "/donation-successful", method = RequestMethod.GET)
     public String donationSuccessful()  {
