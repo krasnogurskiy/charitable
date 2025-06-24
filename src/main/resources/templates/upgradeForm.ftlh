@@ -14,24 +14,24 @@
 <@c.body isLogged isVerified>
 <#--<form id="regForm" action="">-->
     <div class="content_crtpr vrf">
-        <p class="maintxt">Upgrade your profile</p>
+        <p class="maintxt">${springMacroRequestContext.getMessage("upgPr.message")!"[відсутнє повідомлення]"}</p>
 
 
 
         <div id="steps">
-            <div class="step active" data-desc="Passport Scans">1</div>
-            <div class="step" data-desc="Bank Account Details">2</div>
-            <div class="step" data-desc="Review & Submit">3</div>
+            <div class="step active" data-desc="${springMacroRequestContext.getMessage("passport.message")!"[відсутнє повідомлення]"}">1</div>
+            <div class="step" data-desc="${springMacroRequestContext.getMessage("bankDetails.message")!"[відсутнє повідомлення]"}">2</div>
+            <div class="step" data-desc="${springMacroRequestContext.getMessage("rewsub.message")!"[відсутнє повідомлення]"}">3</div>
         </div>
 
         <div class="tab">
-            <p class="maintxt">Example:</p>
+            <p class="maintxt">${springMacroRequestContext.getMessage("example1.message")!"[відсутнє повідомлення]"}</p>
             <div class="image_passport"></div>
 
             <!-- Images Upload -->
             <div action="/upload-image" class="dropzone needsclick dz-clickable" id="demo-upload" enctype="multipart/form-data" method="POST">
                 <div class="dz-default dz-message">
-                    <button class="dz-button" type="button" onchange="updateSize()">Drag & Drop<br>your passport scans here</button>
+                    <button class="dz-button" type="button" onchange="updateSize()">${springMacroRequestContext.getMessage("dragdrop.message")!"[відсутнє повідомлення]"}<br>${springMacroRequestContext.getMessage("scanshere.message")!"[відсутнє повідомлення]"}</button>
                 </div>
             </div>
             <br />
@@ -141,11 +141,11 @@
                     </div>
                     <div class="form-container">
                         <div class="field-container">
-                            <label for="name">Name</label>
+                            <label for="name">${springMacroRequestContext.getMessage("name1.message")!"[відсутнє повідомлення]"}</label>
                             <input id="name" maxlength="20" type="text">
                         </div>
                         <div class="field-container">
-                            <label for="cardnumber">Card Number</label><span id="generatecard">generate random</span>
+                            <label for="cardnumber">${springMacroRequestContext.getMessage("cardnumber.message")!"[відсутнє повідомлення]"}</label><span id="generatecard">${springMacroRequestContext.getMessage("genrand.message")!"[відсутнє повідомлення]"}</span>
                             <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric">
                             <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -153,7 +153,7 @@
                             </svg>
                         </div>
                         <div class="field-container">
-                            <label for="expirationdate">Expiration (mm/yy)</label>
+                            <label for="expirationdate">${springMacroRequestContext.getMessage("exp.message")!"[відсутнє повідомлення]"}</label>
                             <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric">
                         </div>
                     </div>
@@ -163,7 +163,7 @@
         </div>
 
         <div class="tab">
-            <p style="text-align: center;">We are reviewing your documents and data. <br>Wait until response.</p>
+            <p style="text-align: center;">${springMacroRequestContext.getMessage("werev.message")!"[відсутнє повідомлення]"} <br>${springMacroRequestContext.getMessage("waitUnt.message")!"[відсутнє повідомлення]"}</p>
             <div class="image_docs_review"></div>
         </div>
 

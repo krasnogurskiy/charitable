@@ -46,7 +46,7 @@ public class PaymentController {
         return "redirect:/main";
     }
 
-    @GetMapping("/payment/{id}")
+    /*@GetMapping("/payment/{id}")
     public String paymentPage(@PathVariable int id, Principal principal, Model model) {
         Request req = requestRepo.findById(id);
 
@@ -80,7 +80,53 @@ public class PaymentController {
 
 
         return "payment";
+    }*/
+
+    @GetMapping("/payment/{id}")
+    public String paymentPage(@PathVariable int id, Principal principal, Model model) {
+        Request req = requestRepo.findById(id);
+
+        double inputAmount = 200;  //
+        String currency = "UAH";   // або "USD", в залежності від вибору користувача
+
+        // 👇 Конвертація, якщо валюта не USD
+        if (currency.equalsIgnoreCase("UAH")) {
+            double exchangeRate = 41.41;
+            inputAmount = inputAmount / exchangeRate;
+            currency = "USD";
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("version", "3");
+        params.put("action", "paydonate");
+        params.put("amount", String.format("%.2f", inputAmount));
+        params.put("currency", currency);
+        params.put("description", req.getTitle());
+        params.put("order_id", "o_" + System.currentTimeMillis());
+        params.put("product_category", String.valueOf(id));
+
+        User user;
+        if(LoginController.checkIfLogged()){
+            user = userRepo.findByUsername(principal.getName());
+        } else {
+            user = userRepo.findByUsername("Anonymous");
+        }
+        params.put("product_description", String.valueOf(user.getId()));
+        params.put("server_url", APP_HOST + "/get-transaction-status");
+        params.put("result_url", APP_HOST + "/donation-successful");
+        params.put("sandbox", "1");
+
+        LiqPayService liqPay = new LiqPayService(PUBLIC_KEY, PRIVATE_KEY, params);
+        String data = liqPay.getDataString();
+        String signature = liqPay.createSignature(data);
+
+        model.addAttribute("data", data);
+        model.addAttribute("signature", signature);
+        model.addAttribute("donation", new Donation());
+
+        return "payment";
     }
+
 
     @RequestMapping(value = "/get-transaction-status", method = RequestMethod.POST)
     public String paymentPost(String data, Donation donation) throws JsonProcessingException {
