@@ -87,13 +87,13 @@
         <div class="content req">
             <div class="bts-popup" role="alert">
                 <div class="bts-popup-container">
-                    <p class="h-text">Congratulations!</p>
+                    <p class="h-text">${springMacroRequestContext.getMessage("congrat.message")!"[відсутнє повідомлення]"}</p>
                     <img src="/img/achievements/${ach.getSrc()}" alt="" width="80%" />
-                    <p>That's your new achievement!</p>
+                    <p>${springMacroRequestContext.getMessage("newachiev.message")!"[відсутнє повідомлення]"}</p>
                     <div class="bts-popup-button">
-                        <button class="btn" onclick="location.href='/profile/achievements'">Show me all!</button>
+                        <button class="btn" onclick="location.href='/profile/achievements'">${springMacroRequestContext.getMessage("showmeall.message")!"[відсутнє повідомлення]"}</button>
                     </div>
-                    <a href="#0" class="bts-popup-close img-replace">Close</a>
+                    <a href="#0" class="bts-popup-close img-replace">${springMacroRequestContext.getMessage("close1.message")!"[відсутнє повідомлення]"}</a>
                 </div>
             </div>
         </div>
