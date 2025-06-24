@@ -1,4 +1,3 @@
-Андрій, [22.06.2025 20:47]
 <#macro head>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -76,7 +75,6 @@
     </body>
 </#macro>
 
-Андрій, [22.06.2025 20:47]
 <#macro footer>
     <footer>
         <div class="links">
@@ -96,8 +94,8 @@
             </div>
         </div>
         <div class="block3">
-            Copyright © 2025 . Designed by Andrii Krasnogurskiy <br>
-            All rights reserved.
+            ${springMacroRequestContext.getMessage("copyright1.message")!"[відсутнє повідомлення]"} <br>
+            ${springMacroRequestContext.getMessage("copyright2.message")!"[відсутнє повідомлення]"}.
         </div>
     </footer>
 </#macro>
