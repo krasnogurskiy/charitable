@@ -224,12 +224,18 @@
 
     <script>
         Dropzone.autoDiscover = false;
+
+        // Ініціалізуємо Dropzone вручну, щоб мати до нього прямий доступ через JS
+        var myDropzone = new Dropzone("#demo-upload", {
+            url: "/upload-image", // Твоя стандартна адреса проміжного завантаження
+            autoProcessQueue: true,
+            maxFiles: 2 // Паспорт + Селфі
+        });
     </script>
 
     <script src="/js/verification.js"></script>
     <script src="/js/credit-card.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/3.4.0/imask.min.js"></script>
-    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
     <script>
         var originalNextPrev = nextPrev;
@@ -237,6 +243,7 @@
         nextPrev = function(n) {
             originalNextPrev(n);
 
+            // Якщо користувач перейшов на Крок 3 (Індекс 2) — запускаємо ШІ-модуль
             if (typeof currentTab !== 'undefined' && currentTab === 2) {
                 if(document.getElementById("prevBtn")) document.getElementById("prevBtn").style.display = "none";
                 if(document.getElementById("nextBtn")) {
@@ -245,29 +252,56 @@
                 }
 
                 setTimeout(function() {
-                    console.log("Лоадер відпрацював. Зчитуємо ID з прихованого поля...");
+                    console.log("Лоадер відпрацював. Готуємо Multipart-запит для ШІ...");
 
-                    // ЗЧИТУЄМО ЧИСЛОВИЙ ID З НАШОГО HTML ХОЛДЕРА
                     var currentUserId = $("#kyc-user-id-holder").val();
                     var token = $("input[name='_csrf']").val() || "";
 
-                    console.log("Відправка AJAX на сервер з userId: " + currentUserId);
+                    // СТВОРЮЄМО ОБ'ЄКТ FORMDATA ДЛЯ ПЕРЕДАЧІ ФАЙЛІВ ТА ПАРАМЕТРІВ
+                    var formData = new FormData();
+                    formData.append("userId", currentUserId);
+                    formData.append("_csrf", token);
+
+                    // Дістаємо завантажені файли з масиву Dropzone
+                    var files = myDropzone.getAcceptedFiles();
+                    console.log("Знайдено прийнятих файлів у Dropzone: " + files.length);
+
+                    if (files.length >= 2) {
+                        // Перший завантажений файл вважаємо Паспортом, другий — Селфі
+                        formData.append("passport", files[0]);
+                        formData.append("selfie", files[1]);
+                        console.log("[AJAX] Обидва файли успішно запаковано в FormData!");
+                    } else {
+                        console.warn("[AJAX WARNING] У Dropzone менше 2-х файлів. Буде використано резервний режим Java.");
+                    }
+
+                    console.log("Відправка асинхронного Multipart AJAX на сервер...");
 
                     $.ajax({
                         type: "POST",
                         url: "/profile/verify",
-                        data: {
-                            userId: currentUserId, // ТЕПЕР ID ПЕРЕДАЄТЬСЯ НАДІЙНО
-                            _csrf: token
-                        },
+                        data: formData,
+                        processData: false, // КРИТИЧНО: кажемо jQuery не перетворювати FormData на рядок
+                        contentType: false, // КРИТИЧНО: кажемо jQuery не встановлювати дефолтний заголовок типу
                         success: function(response) {
                             console.log("Успішна відповідь від сервера: ", response);
 
                             if (response === "SUCCESS") {
+                                // Якщо ШІ підтвердив автентичність облич
                                 if (document.getElementById("ai-processing")) {
                                     document.getElementById("ai-processing").style.display = "none";
                                 }
                                 if (document.getElementById("ai-result")) {
+                                    // Підставляємо красиву плашку успіху
+                                    document.getElementById("ai-result").innerHTML = `
+                                        <div class="ai-alert">
+                                            <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
+                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію успішно пройдено!</h3>
+                                            <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Косинусна схожість (Cosine Similarity): <span style="color: #28a745;">Схвалено ШІ</span></p>
+                                            <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
+                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Контекст Spring Security та роль оновлено.
+                                            </p>
+                                        </div>`;
                                     document.getElementById("ai-result").style.display = "block";
                                 }
 
@@ -280,8 +314,34 @@
                                         window.location.href = "/profile";
                                     };
                                 }
+                            } else if (response === "FAILED_AI") {
+                                // Якщо Python-ШІ повернув false (різні люди на фото)
+                                if (document.getElementById("ai-processing")) {
+                                    document.getElementById("ai-processing").style.display = "none";
+                                }
+                                if (document.getElementById("ai-result")) {
+                                    document.getElementById("ai-result").innerHTML = `
+                                        <div class="ai-alert" style="background: #f8d7da; color: #721c24; border-color: #f5c6cb;">
+                                            <span style="font-size: 44px; display: block; margin-bottom: 10px;">❌</span>
+                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">ШІ-верифікацію відхилено!</h3>
+                                            <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
+                                                Косинусна схожість нижче встановленого порогу чутливості (0.75). Нейромережа FaceNet визначила, що на завантажених фотокартках знаходяться **абсолютно різні люди**. Спробуйте ще раз із вашим документом.
+                                            </p>
+                                        </div>`;
+                                    document.getElementById("ai-result").style.display = "block";
+                                }
+
+                                var nextBtn = document.getElementById("nextBtn");
+                                if (nextBtn) {
+                                    nextBtn.innerHTML = "Спробувати знову";
+                                    nextBtn.disabled = false;
+                                    nextBtn.style.display = "block";
+                                    nextBtn.onclick = function() {
+                                        window.location.reload();
+                                    };
+                                }
                             } else {
-                                alert("Бекенд не зміг верифікувати сесію. Статус: " + response);
+                                alert("Бекенд повернув помилку: " + response);
                             }
                         },
                         error: function(xhr, status, error) {
