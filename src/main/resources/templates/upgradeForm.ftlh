@@ -243,7 +243,7 @@
         nextPrev = function(n) {
             originalNextPrev(n);
 
-            // Якщо користувач перейшов на Крок 3 (Індекс 2) — запускаємо ШІ-модуль
+            // якщо користувач перейшов на Крок 3 (Індекс 2) — запускаємо ШІ-модуль
             if (typeof currentTab !== 'undefined' && currentTab === 2) {
                 if(document.getElementById("prevBtn")) document.getElementById("prevBtn").style.display = "none";
                 if(document.getElementById("nextBtn")) {
@@ -257,17 +257,16 @@
                     var currentUserId = $("#kyc-user-id-holder").val();
                     var token = $("input[name='_csrf']").val() || "";
 
-                    // СТВОРЮЄМО ОБ'ЄКТ FORMDATA ДЛЯ ПЕРЕДАЧІ ФАЙЛІВ ТА ПАРАМЕТРІВ
                     var formData = new FormData();
                     formData.append("userId", currentUserId);
                     formData.append("_csrf", token);
 
-                    // Дістаємо завантажені файли з масиву Dropzone
+                    // дістаємо завантажені файли з масиву Dropzone
                     var files = myDropzone.getAcceptedFiles();
                     console.log("Знайдено прийнятих файлів у Dropzone: " + files.length);
 
                     if (files.length >= 2) {
-                        // Перший завантажений файл вважаємо Паспортом, другий — Селфі
+                        // перший завантажений файл вважаємо Паспортом, другий — Селфі
                         formData.append("passport", files[0]);
                         formData.append("selfie", files[1]);
                         console.log("[AJAX] Обидва файли успішно запаковано в FormData!");
@@ -281,18 +280,18 @@
                         type: "POST",
                         url: "/profile/verify",
                         data: formData,
-                        processData: false, // КРИТИЧНО: кажемо jQuery не перетворювати FormData на рядок
-                        contentType: false, // КРИТИЧНО: кажемо jQuery не встановлювати дефолтний заголовок типу
+                        processData: false,
+                        contentType: false,
                         success: function(response) {
                             console.log("Успішна відповідь від сервера: ", response);
 
                             if (response === "SUCCESS") {
-                                // Якщо ШІ підтвердив автентичність облич
+                                // ШІ підтвердив автентичність облич
                                 if (document.getElementById("ai-processing")) {
                                     document.getElementById("ai-processing").style.display = "none";
                                 }
                                 if (document.getElementById("ai-result")) {
-                                    // Підставляємо красиву плашку успіху
+                                    //  успіх
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
@@ -315,7 +314,7 @@
                                     };
                                 }
                             } else if (response === "FAILED_AI") {
-                                // Якщо Python-ШІ повернув false (різні люди на фото)
+                                // якщо Python-ШІ повернув false (різні люди на фото)
                                 if (document.getElementById("ai-processing")) {
                                     document.getElementById("ai-processing").style.display = "none";
                                 }

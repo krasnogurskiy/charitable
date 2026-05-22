@@ -113,17 +113,13 @@ public class VerificationController {
     @Autowired
     private UserRepo userRepo;
 
-    // Впроваджуємо менеджер сутностей для примусового скидання кешу Hibernate
+
     @PersistenceContext
     private EntityManager entityManager;
 
-    /**
-     * Фінальний тригер ШІ верифікації.
-     * Приймає ID користувача та два Multipart-файли з форми верифікації.
-     */
     @PostMapping("/profile/verify")
     @ResponseBody
-    @Transactional // Фіксує COMMIT транзакції у PostgreSQL
+    @Transactional // фіксує COMMIT транзакції у PostgreSQL
     public String handleVerification(
             @RequestParam("userId") long userId,
             @RequestParam(value = "passport", required = false) MultipartFile passportFile,
@@ -140,7 +136,7 @@ public class VerificationController {
                 RestTemplate restTemplate = new RestTemplate();
                 String pythonUrl = "http://localhost:5000/api/ai/compare";
 
-                // Формуємо заголовки для Multipart запиту (імітація HTML форми)
+                // Формуємо заголовки для Multipart
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -167,14 +163,12 @@ public class VerificationController {
                     double similarity = ((Number) result.getOrDefault("similarity", 0.0)).doubleValue();
                     System.out.println("[JAVA <- PYTHON] Вердикт ШІ: Verified=" + verified + ", Similarity=" + similarity);
 
-                    // Якщо нейромережа чітко каже, що люди різні (verified == false)
                     if (!verified) {
                         System.out.println("[JAVA] Верифікацію відхилено ШІ: обличчя не збігаються.");
                         return "FAILED_AI";
                     }
                 }
             } catch (Exception e) {
-                // Якщо мікросервіс вимкнений, додаток не впаде, а виконає бізнес-логіку автономно
                 System.out.println("[JAVA WARNING] Python сервер недоступний. Автономний режим (пропуск верифікації).");
                 e.printStackTrace();
             }
@@ -182,27 +176,21 @@ public class VerificationController {
             System.out.println("[JAVA WARNING] Файли не передані в запиті. Використовується дефолтне схвалення.");
         }
 
-        // 2. БЛОК ОНОВЛЕННЯ РОЛЕЙ У ПОСТГРЕСІ (Твоя робоча логіка)
         try {
-            // Вичищаємо таблицю user_role для цього користувача
             userRepo.clearUserRoles(userId);
             System.out.println("[AI KYC] Старі ролі успішно видалено з бази даних.");
 
-            // Записуємо одну єдину нову роль HELP_SEEKER
             userRepo.insertHelpSeekerRole(userId);
             System.out.println("[AI KYC] Нову роль HELP_SEEKER успішно записано.");
 
-            // Змиваємо кеш Hibernate, щоб він забув старий стан об'єкта в пам'яті
             entityManager.flush();
             entityManager.clear();
 
-            // Оновлюємо поточний об'єкт користувача через SELECT з бази даних
             User dbUser = userRepo.findById(userId);
 
             if (dbUser != null) {
                 System.out.println("[AI KYC] Користувача знайдено в базі після апдейту. Ролей: " + dbUser.getRoles().size());
 
-                // Формуємо нову сесію Spring Security, щоб права оновилися без релогіну
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                 Object credentials = (auth != null) ? auth.getCredentials() : null;
 
