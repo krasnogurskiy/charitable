@@ -126,10 +126,24 @@ public class ProfileController {
         return achievIfHas;
     }
 
-    @GetMapping("/profile/upgradeForm")
-    public String upgradeForm(Model model){
-        model.addAttribute("isVerified",false);
-        model.addAttribute("isLogged",true);
-        return "upgradeForm";
-    }
+//    @GetMapping("/profile/upgradeForm")
+//    public String upgradeForm(Model model){
+//        model.addAttribute("isVerified",false);
+//        model.addAttribute("isLogged",true);
+//        return "upgradeForm";
+//    }
+@GetMapping("/profile/upgradeForm")
+public String getUpgradeForm(Principal principal, Model model) {
+    // 1. Залізобетонно знаходимо користувача, який зараз сидить за комп'ютером
+    User user = userRepo.findByUsername(principal.getName());
+
+    // 2. Передаємо його ID в модель для нашого AJAX-запиту
+    model.addAttribute("kycUserId", user.getId());
+
+    // Передаємо інші змінні для відображення шапки/меню
+    LoginController.addToModelAuthorityAttributes(model, principal, userRepo);
+
+    return "upgradeForm";
+}
+
 }
