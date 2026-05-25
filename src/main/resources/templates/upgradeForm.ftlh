@@ -49,7 +49,7 @@
 
         <div class="tab">
             <p class="maintxt" style="text-align: center; font-weight: bold; color: #6f42c1;">
-                🤖 Завантажте photo паспорта та ваше контрольне селфі для ШІ-автентифікації
+                🤖 Завантажте фото паспорта та ваше контрольне селфі для ШІ-автентифікації
             </p>
             <div class="image_passport"></div>
 
@@ -332,7 +332,7 @@
                                             <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію успішно пройдено!</h3>
                                             <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Вердикт ШІ: <span style="color: #28a745;">Особу підтверджено</span></p>
                                             <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
-                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Контекст Spring Security та роль оновлено до Help Seeker.
+                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Роль оновлено до Help Seeker.
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -357,7 +357,7 @@
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">❌</span>
                                             <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">ШІ-верифікацію відхилено!</h3>
                                             <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                                Косинусна схожість нижче встановленого порогу чутливості (0.75). Нейромережа FaceNet визначила, що на завантажених фотокартках знаходяться **абсолютно різні люди**. Спробуйте ще раз із вашим документом.
+                                                Косинусна схожість нижче встановленого порогу чутливості (0.58). Нейромережа FaceNet визначила, що на завантажених фотокартках знаходяться **абсолютно різні люди**. Спробуйте ще раз із вашим документом.
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
