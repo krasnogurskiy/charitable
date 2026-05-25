@@ -49,7 +49,7 @@
 
         <div class="tab">
             <p class="maintxt" style="text-align: center; font-weight: bold; color: #6f42c1;">
-                🤖 Завантажте фото паспорта та ваше контрольне селфі для ШІ-автентифікації
+                🤖 Завантажте photo паспорта та ваше контрольне селфі для ШІ-автентифікації
             </p>
             <div class="image_passport"></div>
 
@@ -217,21 +217,23 @@
     <@c.footer></@c.footer>
 
 <@c.scripts>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        window.Dropzone = window.Dropzone || {};
+        window.Dropzone.autoDiscover = false;
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="/js/dropzone-amd-module.js"></script>
     <script src="/js/dropzone.js"></script>
-    <script src="/js/dropzone.js.map"></script>
 
     <script>
-        Dropzone.autoDiscover = false;
-
+        // Ініціалізуємо Dropzone кастомно
         var myDropzone = new Dropzone("#demo-upload", {
             url: "/upload-image",
             autoProcessQueue: true,
             maxFiles: 2,
             acceptedFiles: "image/*",
             init: function() {
-                // Якщо користувач закидує зайві файли — відкидаємо їх
                 this.on("addedfile", function(file) {
                     if (this.files.length > 2) {
                         this.removeFile(file);
@@ -308,7 +310,7 @@
                     formData.append("selfie", files[1]);
                     console.log("[AJAX] Строго 2 файли успішно запаковано в FormData!");
 
-                    console.log("Відправка асинхронного Multipart AJAX на сервер...");
+                    console.log("Відправка асинхронного Multipart AJAX на server...");
 
                     $.ajax({
                         type: "POST",
@@ -371,7 +373,6 @@
                                     };
                                 }
                             } else if (response === "PYTHON_DOWN" || response === "SERVER_ERROR" || response === "FAILED_NO_FILES") {
-                                // ОБРОБКА ВИМКНЕНОГО ШІ-МІКРОСЕРВІСУ
                                 if (document.getElementById("ai-processing")) {
                                     document.getElementById("ai-processing").style.display = "none";
                                 }
