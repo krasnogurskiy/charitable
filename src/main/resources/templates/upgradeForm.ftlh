@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="/css/dropzone.css">
     <link rel="stylesheet" href="/css/basic.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script>
+        window.Dropzone = window.Dropzone || {};
+        window.Dropzone.autoDiscover = false;
+    </script>
+
     <style>
         .spinner {
             border: 6px solid #f3f3f3;
@@ -208,13 +214,7 @@
     <@c.footer></@c.footer>
 
 <@c.scripts>
-    <script>
-        window.Dropzone = window.Dropzone || {};
-        window.Dropzone.autoDiscover = false;
-    </script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="/js/dropzone-amd-module.js"></script>
     <script src="/js/dropzone.js"></script>
 
     <script>
@@ -239,25 +239,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/3.4.0/imask.min.js"></script>
 
     <script>
-        // Безпечна ініціалізація локалізованих рядків i18n через FreeMarker у JS-контекст
-        var lang_ai_btn_analysis = "${springMacroRequestContext.getMessage('ai.btn.analysis')?js_string}";
-        var lang_ai_btn_restart = "${springMacroRequestContext.getMessage('ai.btn.restart')?js_string}";
-        var lang_ai_btn_finish = "${springMacroRequestContext.getMessage('ai.btn.finish')?js_string}";
-        var lang_ai_btn_retry = "${springMacroRequestContext.getMessage('ai.btn.retry')?js_string}";
-        var lang_ai_btn_back = "${springMacroRequestContext.getMessage('ai.btn.backToProfile')?js_string}";
+        // Захищена ініціалізація локалізованих рядків i18n
+        var lang_ai_btn_analysis = "${(springMacroRequestContext.getMessage('ai.btn.analysis')!'AI Analysis...')?js_string}";
+        var lang_ai_btn_restart = "${(springMacroRequestContext.getMessage('ai.btn.restart')!'Start Over')?js_string}";
+        var lang_ai_btn_finish = "${(springMacroRequestContext.getMessage('ai.btn.finish')!'Finish')?js_string}";
+        var lang_ai_btn_retry = "${(springMacroRequestContext.getMessage('ai.btn.retry')!'Try Again')?js_string}";
+        var lang_ai_btn_back = "${(springMacroRequestContext.getMessage('ai.btn.backToProfile')!'Back to Profile')?js_string}";
 
-        var lang_error_title = "${springMacroRequestContext.getMessage('ai.error.title')?js_string}";
-        var lang_error_desc = "${springMacroRequestContext.getMessage('ai.error.desc')?js_string}";
+        var lang_error_title = "${(springMacroRequestContext.getMessage('ai.error.title')!'Error')?js_string}";
+        var lang_error_desc = "${(springMacroRequestContext.getMessage('ai.error.desc')!'Required 2 files')?js_string}";
 
-        var lang_success_title = "${springMacroRequestContext.getMessage('ai.success.title')?js_string}";
-        var lang_success_verdict = "${springMacroRequestContext.getMessage('ai.success.verdict')?js_string}";
-        var lang_success_desc = "${springMacroRequestContext.getMessage('ai.success.desc')?js_string}";
+        var lang_success_title = "${(springMacroRequestContext.getMessage('ai.success.title')!'Success')?js_string}";
+        var lang_success_verdict = "${(springMacroRequestContext.getMessage('ai.success.verdict')!'Confirmed')?js_string}";
+        var lang_success_desc = "${(springMacroRequestContext.getMessage('ai.success.desc')!'Verification passed')?js_string}";
 
-        var lang_failed_title = "${springMacroRequestContext.getMessage('ai.failed.title')?js_string}";
-        var lang_failed_desc = "${springMacroRequestContext.getMessage('ai.failed.desc')?js_string}";
+        var lang_failed_title = "${(springMacroRequestContext.getMessage('ai.failed.title')!'Rejected')?js_string}";
+        var lang_failed_desc = "${(springMacroRequestContext.getMessage('ai.failed.desc')!'Different people detected')?js_string}";
 
-        var lang_down_title = "${springMacroRequestContext.getMessage('ai.down.title')?js_string}";
-        var lang_down_desc = "${springMacroRequestContext.getMessage('ai.down.desc')?js_string}";
+        var lang_down_title = "${(springMacroRequestContext.getMessage('ai.down.title')!'Unavailable')?js_string}";
+        var lang_down_desc = "${(springMacroRequestContext.getMessage('ai.down.desc')!'Maintenance mode')?js_string}";
 
         var originalNextPrev = nextPrev;
 
