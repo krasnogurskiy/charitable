@@ -39,25 +39,25 @@
     <input type="hidden" id="kyc-user-id-holder" value="${kycUserId?c}" />
 
     <div class="content_crtpr vrf">
-        <p class="maintxt">${springMacroRequestContext.getMessage("upgPr.message")!"[відсутнє повідомлення]"}</p>
+        <p class="maintxt"><@spring.message "upgPr.message"/></p>
 
         <div id="steps">
-            <div class="step active" data-desc="${springMacroRequestContext.getMessage("passport.message")!"[відсутнє повідомлення]"}">1</div>
-            <div class="step" data-desc="${springMacroRequestContext.getMessage("bankDetails.message")!"[відсутнє повідомлення]"}">2</div>
-            <div class="step" data-desc="${springMacroRequestContext.getMessage("rewsub.message")!"[відсутнє повідомлення]"}">3</div>
+            <div class="step active" data-desc="<@spring.message 'passport.message'/>">1</div>
+            <div class="step" data-desc="<@spring.message 'bankDetails.message'/>">2</div>
+            <div class="step" data-desc="<@spring.message 'rewsub.message'/>">3</div>
         </div>
 
         <div class="tab">
             <p class="maintxt" style="text-align: center; font-weight: bold; color: #6f42c1;">
-                🤖 Завантажте photo паспорта та ваше контрольне селфі для ШІ-автентифікації
+                <@spring.message "ai.upload.title"/>
             </p>
             <div class="image_passport"></div>
 
             <div action="/upload-image" class="dropzone needsclick dz-clickable" id="demo-upload" enctype="multipart/form-data" method="POST">
                 <div class="dz-default dz-message">
                     <button class="dz-button" type="button" onchange="updateSize()">
-                        ${springMacroRequestContext.getMessage("dragdrop.message")!"[відсутнє повідомлення]"}<br>
-                        ${springMacroRequestContext.getMessage("scanshere.message")!"[відсутнє повідомлення]"}
+                        <@spring.message "dragdrop.message"/><br>
+                        <@spring.message "scanshere.message"/>
                     </button>
                 </div>
             </div>
@@ -167,18 +167,18 @@
                     </div>
                     <div class="form-container">
                         <div class="field-container">
-                            <label for="name">${springMacroRequestContext.getMessage("name1.message")!"[відсутнє повідомлення]"}</label>
+                            <label for="name"><@spring.message "name1.message"/></label>
                             <input id="name" maxlength="20" type="text">
                         </div>
                         <div class="field-container">
-                            <label for="cardnumber">${springMacroRequestContext.getMessage("cardnumber.message")!"[відсутнє повідомлення]"}</label><span id="generatecard">${springMacroRequestContext.getMessage("genrand.message")!"[відсутнє повідомлення]"}</span>
+                            <label for="cardnumber"><@spring.message "cardnumber.message"/></label><span id="generatecard"><@spring.message "genrand.message"/></span>
                             <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric">
                             <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                  xmlns:xlink="http://www.w3.org/1999/xlink">
                             </svg>
                         </div>
                         <div class="field-container">
-                            <label for="expirationdate">${springMacroRequestContext.getMessage("exp.message")!"[відсутнє повідомлення]"}</label>
+                            <label for="expirationdate"><@spring.message "exp.message"/></label>
                             <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric">
                         </div>
                     </div>
@@ -189,20 +189,11 @@
         <div class="tab">
             <div id="ai-processing" style="text-align: center; padding: 40px 20px;">
                 <div class="spinner"></div>
-                <p style="font-weight: bold; font-size: 20px; color: #333; margin-bottom: 8px;">🤖 Запуск нейромережевого KYC-модуля...</p>
-                <p style="color: #6c757d; font-size: 14px;">Обчислення біометричних ознак обличчя та порівняння векторів (embeddings) через Cosine Similarity...</p>
+                <p style="font-weight: bold; font-size: 20px; color: #333; margin-bottom: 8px;"><@spring.message "ai.processing.title"/></p>
+                <p style="color: #6c757d; font-size: 14px;"><@spring.message "ai.processing.desc"/></p>
             </div>
 
             <div id="ai-result" style="display: none; padding: 20px 0;">
-                <div class="ai-alert">
-                    <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
-                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію профілю успішно пройдено!</h3>
-                    <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Косинусна схожість (Cosine Similarity): <span style="color: #28a745;">0.88</span></p>
-                    <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
-                        Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. База даних PostgreSQL оновила статус вашого профілю до рівня Організатора.
-                    </p>
-                </div>
-                <div class="image_docs_review" style="margin-top: 25px;"></div>
             </div>
         </div>
 
@@ -210,7 +201,7 @@
             <button class="button_proj" type="button" id="nextBtn" onclick="nextPrev(1)">LLLLL</button>
         </div>
         <div class="wrapview">
-            <button class="cancel" type="button" id="prevBtn" onclick="nextPrev(-1)">${springMacroRequestContext.getMessage("previous.message")!"[відсутнє повідомлення]"}</button>
+            <button class="cancel" type="button" id="prevBtn" onclick="nextPrev(-1)"><@spring.message "previous.message"/></button>
         </div>
     </div>
 
@@ -227,7 +218,6 @@
     <script src="/js/dropzone.js"></script>
 
     <script>
-        // Ініціалізуємо Dropzone кастомно
         var myDropzone = new Dropzone("#demo-upload", {
             url: "/upload-image",
             autoProcessQueue: true,
@@ -249,6 +239,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/3.4.0/imask.min.js"></script>
 
     <script>
+        // Безпечна ініціалізація локалізованих рядків i18n через FreeMarker у JS-контекст
+        var lang_ai_btn_analysis = "${springMacroRequestContext.getMessage('ai.btn.analysis')?js_string}";
+        var lang_ai_btn_restart = "${springMacroRequestContext.getMessage('ai.btn.restart')?js_string}";
+        var lang_ai_btn_finish = "${springMacroRequestContext.getMessage('ai.btn.finish')?js_string}";
+        var lang_ai_btn_retry = "${springMacroRequestContext.getMessage('ai.btn.retry')?js_string}";
+        var lang_ai_btn_back = "${springMacroRequestContext.getMessage('ai.btn.backToProfile')?js_string}";
+
+        var lang_error_title = "${springMacroRequestContext.getMessage('ai.error.title')?js_string}";
+        var lang_error_desc = "${springMacroRequestContext.getMessage('ai.error.desc')?js_string}";
+
+        var lang_success_title = "${springMacroRequestContext.getMessage('ai.success.title')?js_string}";
+        var lang_success_verdict = "${springMacroRequestContext.getMessage('ai.success.verdict')?js_string}";
+        var lang_success_desc = "${springMacroRequestContext.getMessage('ai.success.desc')?js_string}";
+
+        var lang_failed_title = "${springMacroRequestContext.getMessage('ai.failed.title')?js_string}";
+        var lang_failed_desc = "${springMacroRequestContext.getMessage('ai.failed.desc')?js_string}";
+
+        var lang_down_title = "${springMacroRequestContext.getMessage('ai.down.title')?js_string}";
+        var lang_down_desc = "${springMacroRequestContext.getMessage('ai.down.desc')?js_string}";
+
         var originalNextPrev = nextPrev;
 
         nextPrev = function(n) {
@@ -257,7 +267,7 @@
             if (typeof currentTab !== 'undefined' && currentTab === 2) {
                 if(document.getElementById("prevBtn")) document.getElementById("prevBtn").style.display = "none";
                 if(document.getElementById("nextBtn")) {
-                    document.getElementById("nextBtn").innerHTML = "Аналіз ШІ...";
+                    document.getElementById("nextBtn").innerHTML = lang_ai_btn_analysis;
                     document.getElementById("nextBtn").disabled = true;
                 }
 
@@ -274,7 +284,6 @@
                     var files = myDropzone.getAcceptedFiles();
                     console.log("Знайдено прийнятих файлів у Dropzone: " + files.length);
 
-                    // СТРОГА ПЕРЕВІРКА НА ФРОНТЕНДІ: МАЄ БУТИ РІВНО 2 ФАЙЛИ
                     if (files.length !== 2) {
                         console.warn("[AJAX REJECT] Некоректна кількість файлів. Перериваємо запит.");
 
@@ -286,9 +295,9 @@
                             document.getElementById("ai-result").innerHTML = `
                                 <div class="ai-alert" style="background: #fff3cd; color: #856404; border-color: #ffeeba;">
                                     <span style="font-size: 44px; display: block; margin-bottom: 10px;">⚠️</span>
-                                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #856404; font-size: 22px;">Помилка завантаження документів</h3>
+                                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #856404; font-size: 22px;">\${lang_error_title}</h3>
                                     <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                         Для проходження ШІ-автентифікації необхідно надати <b>строго 2 файли</b> (Крок 1): першим — фото паспорта, другим — контрольне селфі.
+                                         \${lang_error_desc}
                                     </p>
                                 </div>`;
                             document.getElementById("ai-result").style.display = "block";
@@ -296,21 +305,18 @@
 
                         var nextBtn = document.getElementById("nextBtn");
                         if (nextBtn) {
-                            nextBtn.innerHTML = "Почати заново";
+                            nextBtn.innerHTML = lang_ai_btn_restart;
                             nextBtn.disabled = false;
                             nextBtn.onclick = function() {
                                 window.location.reload();
                             };
                         }
-                        return; // Повністю перериваємо виконання функції, AJAX не полетить
+                        return;
                     }
 
-                    // Пакуємо файли, якщо перевірку пройдено
                     formData.append("passport", files[0]);
                     formData.append("selfie", files[1]);
                     console.log("[AJAX] Строго 2 файли успішно запаковано в FormData!");
-
-                    console.log("Відправка асинхронного Multipart AJAX на server...");
 
                     $.ajax({
                         type: "POST",
@@ -329,10 +335,10 @@
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
-                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію успішно пройдено!</h3>
-                                            <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Вердикт ШІ: <span style="color: #28a745;">Особу підтверджено</span></p>
+                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">\${lang_success_title}</h3>
+                                            <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;"><span style="color: #28a745;">\${lang_success_verdict}</span></p>
                                             <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
-                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Контекст Spring Security та роль оновлено до Help Seeker.
+                                                \${lang_success_desc}
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -340,7 +346,7 @@
 
                                 var nextBtn = document.getElementById("nextBtn");
                                 if (nextBtn) {
-                                    nextBtn.innerHTML = "Завершити";
+                                    nextBtn.innerHTML = lang_ai_btn_finish;
                                     nextBtn.disabled = false;
                                     nextBtn.style.display = "block";
                                     nextBtn.onclick = function() {
@@ -355,9 +361,9 @@
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert" style="background: #f8d7da; color: #721c24; border-color: #f5c6cb;">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">❌</span>
-                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">ШІ-верифікацію відхилено!</h3>
+                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">\${lang_failed_title}</h3>
                                             <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                                Косинусна схожість нижче встановленого порогу чутливості (0.75). Нейромережа FaceNet визначила, що на завантажених фотокартках знаходяться **абсолютно різні люди**. Спробуйте ще раз із вашим документом.
+                                                \${lang_failed_desc}
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -365,7 +371,7 @@
 
                                 var nextBtn = document.getElementById("nextBtn");
                                 if (nextBtn) {
-                                    nextBtn.innerHTML = "Спробувати знову";
+                                    nextBtn.innerHTML = lang_ai_btn_retry;
                                     nextBtn.disabled = false;
                                     nextBtn.style.display = "block";
                                     nextBtn.onclick = function() {
@@ -380,9 +386,9 @@
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert" style="background: #f8d7da; color: #721c24; border-color: #f5c6cb;">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">🔌</span>
-                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">Сервіс ШІ тимчасово недоступний</h3>
+                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">\${lang_down_title}</h3>
                                             <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                                Модуль нейромережевої автентифікації наразі перебуває на технічному обслуговуванні. Автономний пропуск заблоковано з міркувань безпеки. Будь ласка, спробуйте пройти перевірку пізніше.
+                                                \${lang_down_desc}
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -390,7 +396,7 @@
 
                                 var nextBtn = document.getElementById("nextBtn");
                                 if (nextBtn) {
-                                    nextBtn.innerHTML = "Повернутися в профіль";
+                                    nextBtn.innerHTML = lang_ai_btn_back;
                                     nextBtn.disabled = false;
                                     nextBtn.style.display = "block";
                                     nextBtn.onclick = function() {
@@ -398,12 +404,12 @@
                                     };
                                 }
                             } else {
-                                alert("Бекенд повернув критичну помилку: " + response);
+                                alert("Critical server error: " + response);
                             }
                         },
                         error: function(xhr, status, error) {
                             console.error("Помилка запиту!", error);
-                            alert("Помилка зв'язку з сервером. Статус HTTP: " + xhr.status);
+                            alert("HTTP Error: " + xhr.status);
                         }
                     });
                 }, 3000);
