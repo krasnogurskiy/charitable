@@ -288,7 +288,7 @@
                                     <span style="font-size: 44px; display: block; margin-bottom: 10px;">⚠️</span>
                                     <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #856404; font-size: 22px;">Помилка завантаження документів</h3>
                                     <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                        Ви завантажили <b>${files.length}</b> файлів. Для проходження ШІ-автентифікації необхідно надати <b>строго 2 файли</b> (Крок 1): першим — фото паспорта, другим — контрольне селфі.
+                                         Для проходження ШІ-автентифікації необхідно надати <b>строго 2 файли</b> (Крок 1): першим — фото паспорта, другим — контрольне селфі.
                                     </p>
                                 </div>`;
                             document.getElementById("ai-result").style.display = "block";
