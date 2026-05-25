@@ -196,7 +196,7 @@
             <div id="ai-result" style="display: none; padding: 20px 0;">
                 <div class="ai-alert">
                     <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
-                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію профілю успешно пройдено!</h3>
+                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію профілю успішно пройдено!</h3>
                     <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Косинусна схожість (Cosine Similarity): <span style="color: #28a745;">0.88</span></p>
                     <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
                         Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. База даних PostgreSQL оновила статус вашого профілю до рівня Організатора.
@@ -225,11 +225,20 @@
     <script>
         Dropzone.autoDiscover = false;
 
-        // Ініціалізуємо Dropzone вручну, щоб мати до нього прямий доступ через JS
         var myDropzone = new Dropzone("#demo-upload", {
-            url: "/upload-image", // Твоя стандартна адреса проміжного завантаження
+            url: "/upload-image",
             autoProcessQueue: true,
-            maxFiles: 2 // Паспорт + Селфі
+            maxFiles: 2,
+            acceptedFiles: "image/*",
+            init: function() {
+                // Якщо користувач закидує зайві файли — відкидаємо їх
+                this.on("addedfile", function(file) {
+                    if (this.files.length > 2) {
+                        this.removeFile(file);
+                        alert("Дозволено завантажити строго 2 файли: фото паспорта та контрольне селфі!");
+                    }
+                });
+            }
         });
     </script>
 
@@ -243,7 +252,6 @@
         nextPrev = function(n) {
             originalNextPrev(n);
 
-            // якщо користувач перейшов на Крок 3 (Індекс 2) — запускаємо ШІ-модуль
             if (typeof currentTab !== 'undefined' && currentTab === 2) {
                 if(document.getElementById("prevBtn")) document.getElementById("prevBtn").style.display = "none";
                 if(document.getElementById("nextBtn")) {
@@ -261,18 +269,44 @@
                     formData.append("userId", currentUserId);
                     formData.append("_csrf", token);
 
-                    // дістаємо завантажені файли з масиву Dropzone
                     var files = myDropzone.getAcceptedFiles();
                     console.log("Знайдено прийнятих файлів у Dropzone: " + files.length);
 
-                    if (files.length >= 2) {
-                        // перший завантажений файл вважаємо Паспортом, другий — Селфі
-                        formData.append("passport", files[0]);
-                        formData.append("selfie", files[1]);
-                        console.log("[AJAX] Обидва файли успішно запаковано в FormData!");
-                    } else {
-                        console.warn("[AJAX WARNING] У Dropzone менше 2-х файлів. Буде використано резервний режим Java.");
+                    // СТРОГА ПЕРЕВІРКА НА ФРОНТЕНДІ: МАЄ БУТИ РІВНО 2 ФАЙЛИ
+                    if (files.length !== 2) {
+                        console.warn("[AJAX REJECT] Некоректна кількість файлів. Перериваємо запит.");
+
+                        if (document.getElementById("ai-processing")) {
+                            document.getElementById("ai-processing").style.display = "none";
+                        }
+
+                        if (document.getElementById("ai-result")) {
+                            document.getElementById("ai-result").innerHTML = `
+                                <div class="ai-alert" style="background: #fff3cd; color: #856404; border-color: #ffeeba;">
+                                    <span style="font-size: 44px; display: block; margin-bottom: 10px;">⚠️</span>
+                                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #856404; font-size: 22px;">Помилка завантаження документів</h3>
+                                    <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
+                                        Ви завантажили <b>${files.length}</b> файлів. Для проходження ШІ-автентифікації необхідно надати <b>строго 2 файли</b> (Крок 1): першим — фото паспорта, другим — контрольне селфі.
+                                    </p>
+                                </div>`;
+                            document.getElementById("ai-result").style.display = "block";
+                        }
+
+                        var nextBtn = document.getElementById("nextBtn");
+                        if (nextBtn) {
+                            nextBtn.innerHTML = "Почати заново";
+                            nextBtn.disabled = false;
+                            nextBtn.onclick = function() {
+                                window.location.reload();
+                            };
+                        }
+                        return; // Повністю перериваємо виконання функції, AJAX не полетить
                     }
+
+                    // Пакуємо файли, якщо перевірку пройдено
+                    formData.append("passport", files[0]);
+                    formData.append("selfie", files[1]);
+                    console.log("[AJAX] Строго 2 файли успішно запаковано в FormData!");
 
                     console.log("Відправка асинхронного Multipart AJAX на сервер...");
 
@@ -286,19 +320,17 @@
                             console.log("Успішна відповідь від сервера: ", response);
 
                             if (response === "SUCCESS") {
-                                // ШІ підтвердив автентичність облич
                                 if (document.getElementById("ai-processing")) {
                                     document.getElementById("ai-processing").style.display = "none";
                                 }
                                 if (document.getElementById("ai-result")) {
-                                    //  успіх
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
                                             <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію успішно пройдено!</h3>
-                                            <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Косинусна схожість (Cosine Similarity): <span style="color: #28a745;">Схвалено ШІ</span></p>
+                                            <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Вердикт ШІ: <span style="color: #28a745;">Особу підтверджено</span></p>
                                             <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
-                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Контекст Spring Security та роль оновлено.
+                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Контекст Spring Security та роль оновлено до Help Seeker.
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -314,7 +346,6 @@
                                     };
                                 }
                             } else if (response === "FAILED_AI") {
-                                // якщо Python-ШІ повернув false (різні люди на фото)
                                 if (document.getElementById("ai-processing")) {
                                     document.getElementById("ai-processing").style.display = "none";
                                 }
@@ -339,13 +370,39 @@
                                         window.location.reload();
                                     };
                                 }
+                            } else if (response === "PYTHON_DOWN" || response === "SERVER_ERROR" || response === "FAILED_NO_FILES") {
+                                // ОБРОБКА ВИМКНЕНОГО ШІ-МІКРОСЕРВІСУ
+                                if (document.getElementById("ai-processing")) {
+                                    document.getElementById("ai-processing").style.display = "none";
+                                }
+                                if (document.getElementById("ai-result")) {
+                                    document.getElementById("ai-result").innerHTML = `
+                                        <div class="ai-alert" style="background: #f8d7da; color: #721c24; border-color: #f5c6cb;">
+                                            <span style="font-size: 44px; display: block; margin-bottom: 10px;">🔌</span>
+                                            <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">Сервіс ШІ тимчасово недоступний</h3>
+                                            <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
+                                                Модуль нейромережевої автентифікації наразі перебуває на технічному обслуговуванні. Автономний пропуск заблоковано з міркувань безпеки. Будь ласка, спробуйте пройти перевірку пізніше.
+                                            </p>
+                                        </div>`;
+                                    document.getElementById("ai-result").style.display = "block";
+                                }
+
+                                var nextBtn = document.getElementById("nextBtn");
+                                if (nextBtn) {
+                                    nextBtn.innerHTML = "Повернутися в профіль";
+                                    nextBtn.disabled = false;
+                                    nextBtn.style.display = "block";
+                                    nextBtn.onclick = function() {
+                                        window.location.href = "/profile";
+                                    };
+                                }
                             } else {
-                                alert("Бекенд повернув помилку: " + response);
+                                alert("Бекенд повернув критичну помилку: " + response);
                             }
                         },
                         error: function(xhr, status, error) {
                             console.error("Помилка запиту!", error);
-                            alert("Помилка сервера. Статус HTTP: " + xhr.status);
+                            alert("Помилка зв'язку з сервером. Статус HTTP: " + xhr.status);
                         }
                     });
                 }, 3000);
