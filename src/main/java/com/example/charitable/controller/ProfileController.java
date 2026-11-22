@@ -140,6 +140,9 @@ public String getUpgradeForm(Principal principal, Model model) {
     // 2. Передаємо його ID в модель для нашого AJAX-запиту
     model.addAttribute("kycUserId", user.getId());
 
+    // 3. ДОДАНО: Передаємо об'єкт користувача, щоб FreeMarker міг витягнути ім'я та прізвище
+    model.addAttribute("userObj", user);
+
     // Передаємо інші змінні для відображення шапки/меню
     LoginController.addToModelAuthorityAttributes(model, principal, userRepo);
 

@@ -44,11 +44,14 @@ public class VerificationController {
     @Transactional // Фіксує COMMIT транзакції у PostgreSQL
     public String handleVerification(
             @RequestParam("userId") long userId,
+            // СЮДИ ДОДАНО ПРИЙОМ ІМЕНІ ТА ПРІЗВИЩА
+            @RequestParam(value = "userName", defaultValue = "") String userName,
+            @RequestParam(value = "userSurname", defaultValue = "") String userSurname,
             @RequestParam(value = "passport", required = false) MultipartFile passportFile,
             @RequestParam(value = "selfie", required = false) MultipartFile selfieFile) {
 
         System.out.println("========== [JAVA BACKEND] МЕТОД КОНТРОЛЕРА ЗАПУЩЕНО ==========");
-        System.out.println("[JAVA] Користувач ID: " + userId);
+        System.out.println("[JAVA] Користувач ID: " + userId + " | Отримано ім'я: " + userName + " " + userSurname);
 
         // 1. СТРОГА ПЕРЕВІРКА НА НАЯВНІСТЬ ТА ПОРОЖНЕЧУ ФАЙЛІВ
         if (passportFile == null || passportFile.isEmpty() || selfieFile == null || selfieFile.isEmpty()) {
@@ -72,6 +75,10 @@ public class VerificationController {
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
+            // СЮДИ ДОДАНО ПЕРЕДАЧУ ТЕКСТОВИХ ДАНИХ (ІМЕНІ) В PYTHON
+            body.add("userName", userName);
+            body.add("userSurname", userSurname);
+
             // Перетворюємо масив байтів файлів у ByteArrayResource із вказанням імені
             body.add("passport", new ByteArrayResource(passportFile.getBytes()) {
                 @Override
@@ -84,9 +91,11 @@ public class VerificationController {
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-            // Робимо синхронний HTTP POST запит до нашого Python мікросервісу
-            ResponseEntity<Map> response = restTemplate.postForEntity(pythonUrl, requestEntity, Map.class);
-            Map<String, Object> result = response.getBody();
+            // Додаємо  до ResponseEntity
+            ResponseEntity response = restTemplate.postForEntity(pythonUrl, requestEntity, Map.class);
+
+// Тепер Java розуміє, що getBody() повертає Map, але щоб уникнути попереджень компілятора, робимо явний каст:
+            Map<String, Object> result = (Map<String, Object>) response.getBody();
 
             if (result != null) {
                 boolean verified = (boolean) result.getOrDefault("verified", false);
@@ -94,7 +103,7 @@ public class VerificationController {
                 System.out.println("[JAVA <- PYTHON] Вердикт ШІ: Verified=" + verified + ", Similarity=" + similarity);
 
                 if (!verified) {
-                    System.out.println("[JAVA REJECT] Верифікацію відхилено ШІ: обличчя не збігаються.");
+                    System.out.println("[JAVA REJECT] Верифікацію відхилено ШІ: обличчя не збігаються або дані не співпали.");
                     return "FAILED_AI";
                 }
             } else {

@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="/css/dropzone.css">
     <link rel="stylesheet" href="/css/basic.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- MediaPipe для розпізнавання обличчя в браузері (Active Liveness) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+
     <style>
         .spinner {
             border: 6px solid #f3f3f3;
@@ -32,11 +37,45 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             text-align: center;
         }
+
+        /* Стилі для камери Liveness */
+        #liveness-container { display: none; margin-top: 20px; text-align: center; }
+        .camera-viewport {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 360px;
+            margin: 0 auto;
+            background: #0f172a;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #webcam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        .oval-overlay {
+            position: absolute;
+            width: 220px;
+            height: 280px;
+            border: 4px solid #38bdf8;
+            border-radius: 50%;
+            box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.7);
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+        .oval-overlay.oval-valid { border-color: #22c55e; }
+        .instruction-banner { margin-top: 14px; padding: 12px; border-radius: 8px; background: #e0f2fe; color: #0284c7; font-weight: 600; font-size: 16px; }
+        #liveness-success { display: none; color: #155724; background: #d4edda; padding: 15px; border-radius: 8px; margin-top: 15px; font-weight: bold; border: 1px solid #c3e6cb;}
     </style>
 </@c.head>
 
 <@c.body isLogged isVerified>
     <input type="hidden" id="kyc-user-id-holder" value="${kycUserId?c}" />
+
+    <!-- Передаємо дані з бази Java у приховані поля за допомогою правильного об'єкта userObj -->
+    <input type="hidden" id="currentUserName" value="${(userObj.firstName)!''}" />
+    <input type="hidden" id="currentUserSurname" value="${(userObj.surname)!''}" />
 
     <div class="content_crtpr vrf">
         <p class="maintxt">${springMacroRequestContext.getMessage("upgPr.message")!"[відсутнє повідомлення]"}</p>
@@ -47,23 +86,43 @@
             <div class="step" data-desc="${springMacroRequestContext.getMessage("rewsub.message")!"[відсутнє повідомлення]"}">3</div>
         </div>
 
+        <!-- ТАБ 1: ПАСПОРТ ТА ACTIVE LIVENESS -->
         <div class="tab">
             <p class="maintxt" style="text-align: center; font-weight: bold; color: #6f42c1;">
-                🤖 Завантажте фото паспорта та ваше контрольне селфі для ШІ-автентифікації
+                🤖 Крок 1. Завантажте фото паспорта
             </p>
-            <div class="image_passport"></div>
 
-            <div action="/upload-image" class="dropzone needsclick dz-clickable" id="demo-upload" enctype="multipart/form-data" method="POST">
-                <div class="dz-default dz-message">
-                    <button class="dz-button" type="button" onchange="updateSize()">
-                        ${springMacroRequestContext.getMessage("dragdrop.message")!"[відсутнє повідомлення]"}<br>
-                        ${springMacroRequestContext.getMessage("scanshere.message")!"[відсутнє повідомлення]"}
-                    </button>
+            <!-- Зона для паспорта -->
+            <div id="dropzone-container">
+                <div action="/upload-image" class="dropzone needsclick dz-clickable" id="demo-upload" enctype="multipart/form-data" method="POST">
+                    <div class="dz-default dz-message">
+                        <button class="dz-button" type="button" onchange="updateSize()">
+                            ${springMacroRequestContext.getMessage("dragdrop.message")!"Перетягніть сюди"}<br>
+                            скан вашого паспорта (1 файл)
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Зона вебкамери (з'явиться після завантаження паспорта) -->
+            <div id="liveness-container">
+                <p class="maintxt" style="text-align: center; font-weight: bold; color: #6f42c1; margin-bottom: 10px; font-size: 18px;">
+                    📷 Крок 2. Перевірка Liveness (Біометрія)
+                </p>
+                <div class="camera-viewport">
+                    <video id="webcam-video" autoplay playsinline muted></video>
+                    <div id="face-oval" class="oval-overlay"></div>
+                </div>
+                <!-- Прихований canvas для генерації Blob -->
+                <canvas id="capture-canvas" width="640" height="480" style="display: none;"></canvas>
+
+                <div id="liveness-instruction" class="instruction-banner">Запуск камери...</div>
+                <div id="liveness-success">✅ Обличчя успішно зафіксовано! Stateless-обробка (в RAM). Можете переходити далі.</div>
             </div>
             <br />
         </div>
 
+        <!-- ТАБ 2: БАНКІВСЬКА КАРТКА -->
         <div class="tab">
             <div class="create_pr_wrap">
                 <div class="create_proj">
@@ -100,12 +159,8 @@
                                                 c10.2,0,18.5,8.3,18.5,18.5v50.2C186.6,135.3,178.3,143.6,168.1,143.6z" />
                                                     </g>
                                                     <g>
-                                                        <g>
-                                                            <rect x="82" y="70" class="st12" width="1.5" height="60" />
-                                                        </g>
-                                                        <g>
-                                                            <rect x="167.4" y="70" class="st12" width="1.5" height="60" />
-                                                        </g>
+                                                        <g><rect x="82" y="70" class="st12" width="1.5" height="60" /></g>
+                                                        <g><rect x="167.4" y="70" class="st12" width="1.5" height="60" /></g>
                                                         <g>
                                                             <path class="st12" d="M125.5,130.8c-10.2,0-18.5-8.3-18.5-18.5c0-4.6,1.7-8.9,4.7-12.3c-3-3.4-4.7-7.7-4.7-12.3
                                                     c0-10.2,8.3-18.5,18.5-18.5s18.5,8.3,18.5,18.5c0,4.6-1.7,8.9-4.7,12.3c3,3.4,4.7,7.7,4.7,12.3
@@ -113,23 +168,14 @@
                                                     c-3.1,3.2-4.8,7.4-4.8,11.8c0,9.3,7.6,16.9,16.9,16.9s16.9-7.6,16.9-16.9c0-4.4-1.7-8.6-4.8-11.8l-0.5-0.5l0.5-0.5
                                                     c3.1-3.2,4.8-7.4,4.8-11.8C142.4,78.4,134.8,70.8,125.5,70.8z" />
                                                         </g>
-                                                        <g>
-                                                            <rect x="82.8" y="82.1" class="st12" width="25.8" height="1.5" />
-                                                        </g>
-                                                        <g>
-                                                            <rect x="82.8" y="117.9" class="st12" width="26.1" height="1.5" />
-                                                        </g>
-                                                        <g>
-                                                            <rect x="142.4" y="82.1" class="st12" width="25.8" height="1.5" />
-                                                        </g>
-                                                        <g>
-                                                            <rect x="142" y="117.9" class="st12" width="26.2" height="1.5" />
-                                                        </g>
+                                                        <g><rect x="82.8" y="82.1" class="st12" width="25.8" height="1.5" /></g>
+                                                        <g><rect x="82.8" y="117.9" class="st12" width="26.1" height="1.5" /></g>
+                                                        <g><rect x="142.4" y="82.1" class="st12" width="25.8" height="1.5" /></g>
+                                                        <g><rect x="142" y="117.9" class="st12" width="26.2" height="1.5" /></g>
                                                     </g>
                                                 </g>
                                             </g>
-                                    <g id="Back">
-                                    </g>
+                                    <g id="Back"></g>
                                         </svg>
                             </div>
                             <div class="back">
@@ -186,28 +232,21 @@
             </div>
         </div>
 
+        <!-- ТАБ 3: ПРОЦЕСИНГ ТА РЕЗУЛЬТАТ ШІ -->
         <div class="tab">
             <div id="ai-processing" style="text-align: center; padding: 40px 20px;">
                 <div class="spinner"></div>
                 <p style="font-weight: bold; font-size: 20px; color: #333; margin-bottom: 8px;">🤖 Запуск нейромережевого KYC-модуля...</p>
-                <p style="color: #6c757d; font-size: 14px;">Обчислення біометричних ознак обличчя та порівняння векторів (embeddings) через Cosine Similarity...</p>
+                <p style="color: #6c757d; font-size: 14px;">Аналіз Liveness, перевірка документа та порівняння векторів FaceNet...</p>
             </div>
 
             <div id="ai-result" style="display: none; padding: 20px 0;">
-                <div class="ai-alert">
-                    <span style="font-size: 44px; display: block; margin-bottom: 10px;">🛡️</span>
-                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію профілю успішно пройдено!</h3>
-                    <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Косинусна схожість (Cosine Similarity): <span style="color: #28a745;">0.88</span></p>
-                    <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
-                        Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. База даних PostgreSQL оновила статус вашого профілю до рівня Організатора.
-                    </p>
-                </div>
-                <div class="image_docs_review" style="margin-top: 25px;"></div>
+                <!-- Тут буде динамічно заповнюватися результат через JS -->
             </div>
         </div>
 
         <div class="wrapview">
-            <button class="button_proj" type="button" id="nextBtn" onclick="nextPrev(1)">LLLLL</button>
+            <button class="button_proj" type="button" id="nextBtn" onclick="nextPrev(1)">Далі</button>
         </div>
         <div class="wrapview">
             <button class="cancel" type="button" id="prevBtn" onclick="nextPrev(-1)">${springMacroRequestContext.getMessage("previous.message")!"[відсутнє повідомлення]"}</button>
@@ -218,30 +257,165 @@
 
 <@c.scripts>
     <script>
-        window.Dropzone = window.Dropzone || {};
-        window.Dropzone.autoDiscover = false;
+        // Глобальні змінні для Liveness
+        window.liveSelfieBlob = null;
+        var cameraInstance = null;
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="/js/dropzone-amd-module.js"></script>
     <script src="/js/dropzone.js"></script>
 
     <script>
-        // Ініціалізуємо Dropzone кастомно
+        // Жорстко вимикаємо автовиявлення ПІСЛЯ завантаження dropzone.js
+        Dropzone.autoDiscover = false;
+
+        // Якщо Dropzone вже встиг автоматично прикріпитися - знищуємо його перед нашою ініціалізацією
+        if (Dropzone.instances.length > 0) {
+            Dropzone.instances.forEach(dz => dz.destroy());
+        }
+
+        // Ініціалізуємо Dropzone тільки для 1 файлу (Паспорт)
         var myDropzone = new Dropzone("#demo-upload", {
-            url: "/upload-image",
-            autoProcessQueue: true,
-            maxFiles: 2,
+            url: "/upload-image", // autoProcessQueue вимкнено, тому url ролі не грає
+            autoProcessQueue: false,
+            maxFiles: 1,
             acceptedFiles: "image/*",
             init: function() {
                 this.on("addedfile", function(file) {
-                    if (this.files.length > 2) {
+                    if (this.files.length > 1) {
                         this.removeFile(file);
-                        alert("Дозволено завантажити строго 2 файли: фото паспорта та контрольне селфі!");
+                        alert("Дозволено завантажити лише 1 файл (фото паспорта).");
+                        return;
                     }
+
+                    // Блокуємо кнопку "Далі", поки не пройдена вебкамера
+                    if(document.getElementById("nextBtn")) {
+                        document.getElementById("nextBtn").disabled = true;
+                        document.getElementById("nextBtn").style.opacity = "0.5";
+                    }
+
+                    // Ховаємо Dropzone, відкриваємо Liveness-камеру
+                    document.getElementById("dropzone-container").style.display = "none";
+                    document.getElementById("liveness-container").style.display = "block";
+
+                    startActiveLivenessCamera();
                 });
             }
         });
+
+        // Скінченний автомат для Liveness
+        const LivenessState = { WAIT_CENTER: 0, WAIT_TURN: 1, RETURN_CENTER: 2, CAPTURED: 3 };
+        let currentState = LivenessState.WAIT_CENTER;
+        let centerFrames = 0, turnFrames = 0;
+
+        function startActiveLivenessCamera() {
+            const videoElement = document.getElementById('webcam-video');
+            const faceMesh = new FaceMesh({
+                locateFile: (file) => "https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/" + file
+            });
+
+            faceMesh.setOptions({
+                maxNumFaces: 1,
+                refineLandmarks: true,
+                minDetectionConfidence: 0.6,
+                minTrackingConfidence: 0.6
+            });
+            faceMesh.onResults(onFaceMeshResults);
+
+            cameraInstance = new Camera(videoElement, {
+                onFrame: async () => {
+                    if (currentState !== LivenessState.CAPTURED) {
+                        await faceMesh.send({ image: videoElement });
+                    }
+                },
+                width: 640,
+                height: 480
+            });
+            cameraInstance.start();
+        }
+
+        function onFaceMeshResults(results) {
+            if (currentState === LivenessState.CAPTURED) return;
+
+            const instruction = document.getElementById('liveness-instruction');
+            const oval = document.getElementById('face-oval');
+
+            if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+                instruction.innerText = 'Обличчя не знайдено. Помістіть обличчя в овал';
+                oval.classList.remove('oval-valid');
+                return;
+            }
+
+            const landmarks = results.multiFaceLandmarks[0];
+            const nose = landmarks[1];
+            const leftEdge = landmarks[234];
+            const rightEdge = landmarks[454];
+
+            // Перевіряємо чи обличчя в межах овалу
+            if (nose.x < 0.35 || nose.x > 0.65 || nose.y < 0.25 || nose.y > 0.75) {
+                instruction.innerText = 'Тримайте обличчя по центру овалу';
+                oval.classList.remove('oval-valid');
+                return;
+            }
+
+            oval.classList.add('oval-valid');
+
+            // Обчислення повороту голови
+            const faceWidth = Math.abs(rightEdge.x - leftEdge.x);
+            const noseOffset = (nose.x - leftEdge.x) / faceWidth; // ~0.50 в анфас
+
+            if (currentState === LivenessState.WAIT_CENTER) {
+                instruction.innerText = 'Дивіться прямо в камеру...';
+                if (noseOffset > 0.42 && noseOffset < 0.58) {
+                    if (++centerFrames > 10) {
+                        currentState = LivenessState.WAIT_TURN;
+                    }
+                }
+            } else if (currentState === LivenessState.WAIT_TURN) {
+                instruction.innerText = 'Поверніть голову ліворуч або праворуч';
+                if (noseOffset > 0.65 || noseOffset < 0.35) {
+                    if (++turnFrames > 5) {
+                        currentState = LivenessState.RETURN_CENTER;
+                    }
+                }
+            } else if (currentState === LivenessState.RETURN_CENTER) {
+                instruction.innerText = 'Чудово! Тепер подивіться прямо для знімка';
+                if (noseOffset > 0.44 && noseOffset < 0.56) {
+                    currentState = LivenessState.CAPTURED;
+                    captureFrameAndStop();
+                }
+            }
+        }
+
+        function captureFrameAndStop() {
+            const videoElement = document.getElementById('webcam-video');
+            const canvasElement = document.getElementById('capture-canvas');
+            const ctx = canvasElement.getContext('2d');
+
+            // Знімок кадру
+            ctx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (cameraInstance) {
+                cameraInstance.stop();
+            }
+
+            // Конвертація в Blob (Stateless, зберігається в пам'яті)
+            canvasElement.toBlob((blob) => {
+                window.liveSelfieBlob = blob;
+
+                document.getElementById('liveness-instruction').style.display = 'none';
+                document.getElementById('liveness-success').style.display = 'block';
+                document.getElementById('face-oval').style.display = 'none';
+                document.querySelector('.camera-viewport').style.display = 'none';
+
+                // Активуємо кнопку Далі
+                var nextBtn = document.getElementById("nextBtn");
+                if(nextBtn) {
+                    nextBtn.disabled = false;
+                    nextBtn.style.opacity = "1";
+                }
+            }, 'image/jpeg', 0.95);
+        }
     </script>
 
     <script src="/js/verification.js"></script>
@@ -262,21 +436,29 @@
                 }
 
                 setTimeout(function() {
-                    console.log("Лоадер відпрацював. Готуємо Multipart-запит для ШІ...");
+                    console.log("Готуємо Multipart-запит (Паспорт + Liveness Selfie)...");
 
                     var currentUserId = $("#kyc-user-id-holder").val();
                     var token = $("input[name='_csrf']").val() || "";
 
+                    // Зчитуємо ім'я та прізвище з прихованих полів
+                    var userName = $("#currentUserName").val() || "";
+                    var userSurname = $("#currentUserSurname").val() || "";
+
                     var formData = new FormData();
                     formData.append("userId", currentUserId);
-                    formData.append("_csrf", token);
+                    if (token) {
+                        formData.append("_csrf", token);
+                    }
+                    // Додаємо імена до форми
+                    formData.append("userName", userName);
+                    formData.append("userSurname", userSurname);
 
                     var files = myDropzone.getAcceptedFiles();
-                    console.log("Знайдено прийнятих файлів у Dropzone: " + files.length);
 
-                    // СТРОГА ПЕРЕВІРКА НА ФРОНТЕНДІ: МАЄ БУТИ РІВНО 2 ФАЙЛИ
-                    if (files.length !== 2) {
-                        console.warn("[AJAX REJECT] Некоректна кількість файлів. Перериваємо запит.");
+                    // СТРОГА ПЕРЕВІРКА НА ФРОНТЕНДІ: 1 ФАЙЛ ПАСПОРТА ТА 1 BLOB З ВЕБКАМЕРИ
+                    if (files.length !== 1 || !window.liveSelfieBlob) {
+                        console.warn("[AJAX REJECT] Не пройдено Liveness або не завантажено паспорт.");
 
                         if (document.getElementById("ai-processing")) {
                             document.getElementById("ai-processing").style.display = "none";
@@ -286,9 +468,9 @@
                             document.getElementById("ai-result").innerHTML = `
                                 <div class="ai-alert" style="background: #fff3cd; color: #856404; border-color: #ffeeba;">
                                     <span style="font-size: 44px; display: block; margin-bottom: 10px;">⚠️</span>
-                                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #856404; font-size: 22px;">Помилка завантаження документів</h3>
+                                    <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #856404; font-size: 22px;">Помилка завантаження даних</h3>
                                     <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                         Для проходження ШІ-автентифікації необхідно надати <b>строго 2 файли</b> (Крок 1): першим — фото паспорта, другим — контрольне селфі.
+                                         Для проходження перевірки потрібно завантажити документ і пройти перевірку обличчя на камері.
                                     </p>
                                 </div>`;
                             document.getElementById("ai-result").style.display = "block";
@@ -298,19 +480,17 @@
                         if (nextBtn) {
                             nextBtn.innerHTML = "Почати заново";
                             nextBtn.disabled = false;
-                            nextBtn.onclick = function() {
-                                window.location.reload();
-                            };
+                            nextBtn.onclick = function() { window.location.reload(); };
                         }
-                        return; // Повністю перериваємо виконання функції, AJAX не полетить
+                        return;
                     }
 
-                    // Пакуємо файли, якщо перевірку пройдено
-                    formData.append("passport", files[0]);
-                    formData.append("selfie", files[1]);
-                    console.log("[AJAX] Строго 2 файли успішно запаковано в FormData!");
+                    // Пакуємо файли у форму для Java Multipart-контролера
+                    formData.append("passport", files[0]); // файл з Dropzone
+                    formData.append("selfie", window.liveSelfieBlob, "live_selfie.jpg"); // кадр з камери
+                    formData.append("livenessPassed", "true");
 
-                    console.log("Відправка асинхронного Multipart AJAX на server...");
+                    console.log("Відправка асинхронного Multipart AJAX на сервер...");
 
                     $.ajax({
                         type: "POST",
@@ -322,9 +502,8 @@
                             console.log("Успішна відповідь від сервера: ", response);
 
                             if (response === "SUCCESS") {
-                                if (document.getElementById("ai-processing")) {
-                                    document.getElementById("ai-processing").style.display = "none";
-                                }
+                                if (document.getElementById("ai-processing")) document.getElementById("ai-processing").style.display = "none";
+
                                 if (document.getElementById("ai-result")) {
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert">
@@ -332,7 +511,7 @@
                                             <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #155724; font-size: 22px;">Біометричну верифікацію успішно пройдено!</h3>
                                             <p style="font-size: 16px; margin: 0 0 10px 0; font-weight: 600;">Вердикт ШІ: <span style="color: #28a745;">Особу підтверджено</span></p>
                                             <p style="font-size: 14px; line-height: 1.5; color: #1e7e34; margin: 0; text-align: left;">
-                                                Згорткова нейромережа (CNN) підтвердила повну автентичність обличчя на селфі з фотокарткою у наданому документі. Роль оновлено до Help Seeker.
+                                                Anti-Spoofing перевірку пройдено. Нейромережа (CNN) підтвердила автентичність обличчя з паспортом. Роль оновлено до Help Seeker.
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -342,22 +521,18 @@
                                 if (nextBtn) {
                                     nextBtn.innerHTML = "Завершити";
                                     nextBtn.disabled = false;
-                                    nextBtn.style.display = "block";
-                                    nextBtn.onclick = function() {
-                                        window.location.href = "/profile";
-                                    };
+                                    nextBtn.onclick = function() { window.location.href = "/profile"; };
                                 }
                             } else if (response === "FAILED_AI") {
-                                if (document.getElementById("ai-processing")) {
-                                    document.getElementById("ai-processing").style.display = "none";
-                                }
+                                if (document.getElementById("ai-processing")) document.getElementById("ai-processing").style.display = "none";
+
                                 if (document.getElementById("ai-result")) {
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert" style="background: #f8d7da; color: #721c24; border-color: #f5c6cb;">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">❌</span>
                                             <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">ШІ-верифікацію відхилено!</h3>
                                             <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                                Косинусна схожість нижче встановленого порогу чутливості (0.58). Нейромережа FaceNet визначила, що на завантажених фотокартках знаходяться **абсолютно різні люди**. Спробуйте ще раз із вашим документом.
+                                                Виявлено незбіг осіб на документі та вебкамері, або спрацював захист від спуфінгу. Спробуйте ще раз із вашим справжнім документом.
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -367,22 +542,18 @@
                                 if (nextBtn) {
                                     nextBtn.innerHTML = "Спробувати знову";
                                     nextBtn.disabled = false;
-                                    nextBtn.style.display = "block";
-                                    nextBtn.onclick = function() {
-                                        window.location.reload();
-                                    };
+                                    nextBtn.onclick = function() { window.location.reload(); };
                                 }
-                            } else if (response === "PYTHON_DOWN" || response === "SERVER_ERROR" || response === "FAILED_NO_FILES") {
-                                if (document.getElementById("ai-processing")) {
-                                    document.getElementById("ai-processing").style.display = "none";
-                                }
+                            } else {
+                                if (document.getElementById("ai-processing")) document.getElementById("ai-processing").style.display = "none";
+
                                 if (document.getElementById("ai-result")) {
                                     document.getElementById("ai-result").innerHTML = `
                                         <div class="ai-alert" style="background: #f8d7da; color: #721c24; border-color: #f5c6cb;">
                                             <span style="font-size: 44px; display: block; margin-bottom: 10px;">🔌</span>
                                             <h3 style="margin: 0 0 10px 0; font-weight: bold; color: #721c24; font-size: 22px;">Сервіс ШІ тимчасово недоступний</h3>
                                             <p style="font-size: 14px; line-height: 1.5; margin: 0; text-align: center;">
-                                                Модуль нейромережевої автентифікації наразі перебуває на технічному обслуговуванні. Автономний пропуск заблоковано з міркувань безпеки. Будь ласка, спробуйте пройти перевірку пізніше.
+                                                Автономний пропуск заблоковано з міркувань безпеки. Будь ласка, спробуйте пройти перевірку пізніше.
                                             </p>
                                         </div>`;
                                     document.getElementById("ai-result").style.display = "block";
@@ -392,13 +563,8 @@
                                 if (nextBtn) {
                                     nextBtn.innerHTML = "Повернутися в профіль";
                                     nextBtn.disabled = false;
-                                    nextBtn.style.display = "block";
-                                    nextBtn.onclick = function() {
-                                        window.location.href = "/profile";
-                                    };
+                                    nextBtn.onclick = function() { window.location.href = "/profile"; };
                                 }
-                            } else {
-                                alert("Бекенд повернув критичну помилку: " + response);
                             }
                         },
                         error: function(xhr, status, error) {
@@ -406,7 +572,7 @@
                             alert("Помилка зв'язку з сервером. Статус HTTP: " + xhr.status);
                         }
                     });
-                }, 3000);
+                }, 1500);
             }
         }
     </script>
