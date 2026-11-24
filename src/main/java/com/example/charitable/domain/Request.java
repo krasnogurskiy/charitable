@@ -210,6 +210,12 @@ public class Request {
     }
 
     public List<Donation> getRecentDonate() { return recentDonate; }
+
+    /** Кількість анонімних донатів (заповнюється в setTopDonaters). */
+    @Transient
+    private int anonymousDonationsCount;
+
+    public int getAnonymousDonationsCount() { return anonymousDonationsCount; }
     public void setRecentDonate(DonationRepo donationRepo, int safe_id)
     {
         List<Donation> donationList = donationRepo.findByRequestId(safe_id);
@@ -225,14 +231,17 @@ public class Request {
     {
         List<Donation> donationList = donationRepo.findByRequestId(safe_id);
         Map<User, Double> map = new HashMap<User, Double>();
-        Map<User, Donation> map1 = new HashMap<User, Donation>();
-        for(int i = 0; i < donationList.size(); i++)
+        this.anonymousDonationsCount = 0;
+        for (Donation donation : donationList)
         {
-            if (map.containsKey(donationList.get(i).getUser())){
-                map.put(donationList.get(i).getUser(), map.get(donationList.get(i).getUser()) + donationList.get(i).getDonatedSum());
+            User donor = donation.getUser();
+            if (donor == null) {
+                // Анонімні донати не потрапляють у топ донатерів, але враховуються
+                // в collectedSum (і, відповідно, в сегменті "Others" на діаграмі)
+                this.anonymousDonationsCount++;
+                continue;
             }
-            else
-                map.put(donationList.get(i).getUser(), donationList.get(i).getDonatedSum());
+            map.merge(donor, donation.getDonatedSum(), Double::sum);
         }
 
         ValueComparator bvc = new ValueComparator(map);

@@ -1,5 +1,16 @@
 <#import "parts/common.ftlh" as c>
 <#import "/spring.ftl" as spring />
+<#-- Відсоток від requiredSum для діаграми (анонімні донати входять у collectedSum і в "Others") -->
+<#function chartPct v>
+    <#if request.getRequiredSum() <= 0 || v < 0.005><#return 0></#if>
+    <#local p = v * 100 / request.getRequiredSum()>
+    <#if p < 1><#return 1></#if>
+    <#return p?floor>
+</#function>
+<#function leftPct>
+    <#if request.getRequiredSum() <= request.getCollectedSum()><#return 0></#if>
+    <#return ((request.getRequiredSum() - request.getCollectedSum()) * 100 / request.getRequiredSum())?floor>
+</#function>
 
 
 <!DOCTYPE html>
@@ -53,7 +64,7 @@
 
             <div class="progress">
                 <p class="ac pr">${springMacroRequestContext.getMessage("progress.message")!"[відсутнє повідомлення]"} $${request.getCollectedSum()?floor}</p>
-                <p class="raised">${springMacroRequestContext.getMessage("raisedby.message")!"[відсутнє повідомлення]"} <#assign result = 0> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} people</p>
+                <p class="raised">${springMacroRequestContext.getMessage("raisedby.message")!"[відсутнє повідомлення]"} <#assign result = request.getAnonymousDonationsCount()> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} people</p>
                 <!-- <img src="..//static/img/diag.png" alt="" class="wa"> -->
                 <div id="donutchart" style="width: 100%; height: 300px;"></div>
                 <div class="percentage"><#if (request.getCollectedSum() / request.getRequiredSum() * 100) < 1> ${(request.getCollectedSum() / request.getRequiredSum() * 100)?ceiling} </#if> <#if 1 < (request.getCollectedSum() / request.getRequiredSum() * 100) > ${(request.getCollectedSum() / request.getRequiredSum() * 100)?floor} </#if>%</div>
@@ -83,7 +94,7 @@
                             </div>
                         </#if>
                     </#list>
-                    <#if (request.getCollectedSum() - top_donate) != 0>
+                    <#if (request.getCollectedSum() - top_donate) gt 0.005>
                         <div class="person">
                             <div class="left">
                                 <div class="box4 olbox"></div>
@@ -161,8 +172,15 @@
                         <#if counter < 5>
                             <div class="person aic">
                                 <div class="left">
-                                    <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + person.getUser().avatar});"></div>
-                                    <div class="name">${person.getUser().getFirstName() +  " " + person.getUser().getSurname()}</div>
+                                    <#if person.user??>
+                                        <a href="/profile/${person.user.id?c}" style="display: flex; align-items: center; color: inherit;">
+                                            <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + ((person.user.avatar)!"")});"></div>
+                                            <div class="name">${(person.user.firstName)!""} ${(person.user.surname)!""}</div>
+                                        </a>
+                                    <#else>
+                                        <div class="tinyavatar1" style="background-image: url(/img/anon.png);"></div>
+                                        <div class="name">${springMacroRequestContext.getMessage("anonymousUser.message")!"Анонімний користувач"}</div>
+                                    </#if>
                                 </div>
                                 <div class="summ">$${person.getDonatedSum()}</div>
                             </div>
@@ -205,25 +223,21 @@
                 ['top1', 0],
                 ['top2', 0],
                 ['top3n', 0],
-                ['Others', 0],
-                ['Left to collect', ${request.getRequiredSum()}]
+                ['Others', ${chartPct(request.getCollectedSum() - top_donate)?c}],
+                ['Left to collect', ${leftPct()?c}]
                     </#if>
                     <#if count_google == 1>
                     <#list request.getTopDonaters()?keys as key>
                     <#list request.getTopDonaters()?values as value>
                     ['${key.getFirstName() + " " + key.getSurname()}',
-                    <#if (value * 100 / request.getRequiredSum()) < 1 > ${(value * 100 / request.getRequiredSum())?ceiling} </#if>
-                    <#if 1 <= (value * 100 / request.getRequiredSum()) > ${(value * 100 / request.getRequiredSum())?floor} </#if>
+                    ${chartPct(value)?c}
                     ],
                 </#list>
                 </#list>
                 ['top2', 0],
                 ['top3n', 0],
-                ['Others', 0],
-                ['Left to collect',
-                    <#if request.getRequiredSum() != request.getCollectedSum()> ${((request.getRequiredSum() - request.getCollectedSum()) * 100 / request.getRequiredSum())?floor} </#if>
-                    <#if request.getRequiredSum() <= request.getCollectedSum() > 0 </#if>
-                ]
+                ['Others', ${chartPct(request.getCollectedSum() - top_donate)?c}],
+                ['Left to collect', ${leftPct()?c}]
                     </#if>
                     <#if count_google == 2>
                     <#list request.getTopDonaters()?keys as key>
@@ -234,19 +248,15 @@
                     <#continue>
                     </#if>
                     ['${key.getFirstName() + " " + key.getSurname()}',
-                    <#if (value * 100 / request.getRequiredSum()) < 1 > ${(value * 100 / request.getRequiredSum())?ceiling} </#if>
-                    <#if 1 <= (value * 100 / request.getRequiredSum()) > ${(value * 100 / request.getRequiredSum())?floor} </#if>
+                    ${chartPct(value)?c}
                     ],
                 <#assign enter_google++>
                 <#break>
                 </#list>
                 </#list>
                 ['top3n', 0],
-                ['Others', 0],
-                ['Left to collect',
-                    <#if request.getRequiredSum() != request.getCollectedSum()> ${((request.getRequiredSum() - request.getCollectedSum()) * 100 / request.getRequiredSum())?floor} </#if>
-                    <#if request.getRequiredSum() <= request.getCollectedSum() > 0 </#if>
-                ]
+                ['Others', ${chartPct(request.getCollectedSum() - top_donate)?c}],
+                ['Left to collect', ${leftPct()?c}]
                     </#if>
                     <#if 2 < count_google>
                     <#assign time_to_produce = 0>
@@ -259,8 +269,7 @@
                     <#continue>
                     </#if>
                     ['${key.getFirstName() + " " + key.getSurname()}',
-                    <#if (value * 100 / request.getRequiredSum()) < 1 > ${(value * 100 / request.getRequiredSum())?ceiling} </#if>
-                    <#if 1 <= (value * 100 / request.getRequiredSum()) > ${(value * 100 / request.getRequiredSum())?floor} </#if>
+                    ${chartPct(value)?c}
                     ],
                 <#assign time_to_produce++>
                 <#assign enter_google++>
@@ -268,14 +277,8 @@
                 </#list>
                 </#if>
                 </#list>
-                ['Others',
-                    <#if (request.getCollectedSum() - top_donate) * 100 / request.getRequiredSum() < 1> ${((request.getCollectedSum() - top_donate) * 100 / request.getRequiredSum())?ceiling} </#if>
-                    <#if 1 <    (request.getCollectedSum() - top_donate) * 100 / request.getRequiredSum()> ${((request.getCollectedSum() - top_donate) * 100 / request.getRequiredSum())?floor} </#if>
-                ],
-                ['Left to collect',
-                    <#if request.getRequiredSum() != request.getCollectedSum()> ${((request.getRequiredSum() - request.getCollectedSum()) * 100 / request.getRequiredSum())?floor} </#if>
-                    <#if request.getRequiredSum() <= request.getCollectedSum() > 0 </#if>
-                ]
+                ['Others', ${chartPct(request.getCollectedSum() - top_donate)?c}],
+                ['Left to collect', ${leftPct()?c}]
                 </#if>
             ]);
 

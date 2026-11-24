@@ -131,6 +131,8 @@ public class RequestController {
         }
 
         Request request = requestRepo.findById(safe_id);
+        if (request == null)
+            return "redirect:/main";
 
         //
         //
@@ -165,6 +167,8 @@ public class RequestController {
             return "redirect:/main";
         }
         Request request = requestRepo.findById(safe_id);
+        if (request == null)
+            return "redirect:/main";
         model.addAttribute(request);
 
         request.setCollectedSum(donationRepo, safe_id);

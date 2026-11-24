@@ -328,73 +328,81 @@ public class User implements UserDetails {
     }
     public List<Achievement> setNewAchievements(DonationRepo donationRepo, Donation currDon){
         List<Achievement> obtainedAch = new ArrayList<>();
+        // Анонімні донати (без користувача) не дають досягнень
+        if (currDon == null || currDon.getUser() == null || currDon.getUser().getId() == null
+                || currDon.getRequest() == null) {
+            return obtainedAch;
+        }
+        Long donorId = currDon.getUser().getId();
 
         //donation in your city (local hero)
         if(!this.achievements.contains(Achievement.LOCALHERO)) {
-            if (currDon.getRequest().getCity().equals(currDon.getRequest().getUser().getCity())) {
+            User requestOwner = currDon.getRequest().getUser();
+            if (requestOwner != null && currDon.getRequest().getCity() != null
+                    && currDon.getRequest().getCity().equals(requestOwner.getCity())) {
                 obtainedAch.add(Achievement.LOCALHERO);
                 this.achievements.add(Achievement.LOCALHERO);
             }
         }
         if(!this.achievements.contains(Achievement.ANIMAL)) {
-            if (currDon.getRequest().getSection().equals("Animals")) {
+            if ("Animals".equals(currDon.getRequest().getSection())) {
                 obtainedAch.add(Achievement.ANIMAL);
                 this.achievements.add(Achievement.ANIMAL);
             }
         }
         if(!this.achievements.contains(Achievement.MILITARY)) {
             // check
-            if (currDon.getRequest().getSection().equals("Military")) {
+            if ("Military".equals(currDon.getRequest().getSection())) {
                 obtainedAch.add(Achievement.MILITARY);
                 this.achievements.add(Achievement.MILITARY);
             }
         }
         if(!this.achievements.contains(Achievement.HUNGER)) {
-            if (currDon.getRequest().getSection().equals("Hunger")) {
+            if ("Hunger".equals(currDon.getRequest().getSection())) {
                 obtainedAch.add(Achievement.HUNGER);
                 this.achievements.add(Achievement.HUNGER);
             }
         }
         if(!this.achievements.contains(Achievement.ENVIRONMENT)) {
-            if (currDon.getRequest().getSection().equals("Environment")) {
+            if ("Environment".equals(currDon.getRequest().getSection())) {
                 obtainedAch.add(Achievement.ENVIRONMENT);
                 this.achievements.add(Achievement.ENVIRONMENT);
             }
         }
         if(!this.achievements.contains(Achievement.HEALTH)) {
-            if (currDon.getRequest().getSection().equals("Health")) {
+            if ("Health".equals(currDon.getRequest().getSection())) {
                 obtainedAch.add(Achievement.HEALTH);
                 this.achievements.add(Achievement.HEALTH);
             }
         }
         if(!this.achievements.contains(Achievement.EDUCATION)) {
-            if (currDon.getRequest().getSection().equals("Education")) {
+            if ("Education".equals(currDon.getRequest().getSection())) {
                 obtainedAch.add(Achievement.EDUCATION);
                 this.achievements.add(Achievement.EDUCATION);
             }
         }
         //first donation
         if(!this.achievements.contains(Achievement.FIRSTDONATION)) {
-            if (donationRepo.findAllByUserId(currDon.getUser().getId()).size() >= 1) {
+            if (donationRepo.findAllByUserId(donorId).size() >= 1) {
                 obtainedAch.add(Achievement.FIRSTDONATION);
                 this.achievements.add(Achievement.FIRSTDONATION);
             }
         }
         if(!this.achievements.contains(Achievement.FIVEDONATION)) {
-            if (donationRepo.findAllByUserId(currDon.getUser().getId()).size() >= 5) {
+            if (donationRepo.findAllByUserId(donorId).size() >= 5) {
                 obtainedAch.add(Achievement.FIVEDONATION);
                 this.achievements.add(Achievement.FIVEDONATION);
             }
         }
         if(!this.achievements.contains(Achievement.TENDONATION)) {
-            if (donationRepo.findAllByUserId(currDon.getUser().getId()).size() >= 10) {
+            if (donationRepo.findAllByUserId(donorId).size() >= 10) {
                 obtainedAch.add(Achievement.TENDONATION);
                 this.achievements.add(Achievement.TENDONATION);
             }
         }
         //count all donated general sum
         double sum = 0;
-        for(Donation donation : donationRepo.findAllByUserId(currDon.getUser().getId())){
+        for(Donation donation : donationRepo.findAllByUserId(donorId)){
             sum += donation.getDonatedSum();
         }
         if(!this.achievements.contains(Achievement.ONETHOUSAND)) {

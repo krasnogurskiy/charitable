@@ -58,22 +58,30 @@ public class MainController {
          model.addAttribute("requests", topThreeRequests);
 
          Donation donation = donationRepo.findById(id);
+         if (donation == null || donation.getRequest() == null) {
+             return "redirect:/donation-error";
+         }
 
          if(!donation.isSuccessful()){
              donation.setSuccessful(true);
+             donationRepo.save(donation);
              Request requestToChange = donation.getRequest();
-             requestToChange.addToSum(donation);
+             requestToChange.addToSum(donation); // анонімні донати теж додаються до зібраної суми
              if(requestToChange.getCollectedSum() > requestToChange.getRequiredSum()){
                  requestToChange.setActive(false);
                  requestToChange.setCollectedSum(requestToChange.getRequiredSum());
              }
              requestRepo.save(requestToChange);
 
-             if(LoginController.checkIfLogged()){
-                 List<Achievement> achToDisplay = donation.getUser().setNewAchievements(donationRepo, donation);
-                 model.addAttribute("achToDisplay", achToDisplay);
+             // Досягнення нараховуються тільки зареєстрованому донатеру
+             User donor = donation.getUser();
+             if (donor != null) {
+                 if (LoginController.checkIfLogged()) {
+                     List<Achievement> achToDisplay = donor.setNewAchievements(donationRepo, donation);
+                     model.addAttribute("achToDisplay", achToDisplay);
+                 }
+                 userRepo.save(donor);
              }
-             userRepo.save(donation.getUser());
          }
          LoginController.addToModelAuthorityAttributes(model, principal, userRepo);
          return "main";

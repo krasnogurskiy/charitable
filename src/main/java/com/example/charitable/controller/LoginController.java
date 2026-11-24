@@ -63,13 +63,32 @@ public class LoginController {
 
     public static boolean checkIfLogged() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return !(authentication instanceof AnonymousAuthenticationToken);
+        return authentication != null
+                && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)
+                && !"anonymousUser".equals(authentication.getPrincipal());
+    }
+
+    /**
+     * Повертає поточного авторизованого користувача або null, якщо користувач анонімний
+     * (principal == null, anonymousUser або користувача немає в БД).
+     */
+    public static User getCurrentUserOrNull(Principal principal, UserRepo userRepo) {
+        if (principal == null || !checkIfLogged()) {
+            return null;
+        }
+        String name = principal.getName();
+        if (name == null || "anonymousUser".equals(name)) {
+            return null;
+        }
+        return userRepo.findByUsername(name);
     }
 
     public static void addToModelAuthorityAttributes(Model m, Principal p, UserRepo userRepo){
-        if(LoginController.checkIfLogged()){
+        User user = getCurrentUserOrNull(p, userRepo);
+        if(user != null){
             m.addAttribute("isLogged", true);
-            m.addAttribute("isVerified", userRepo.findByUsername(p.getName()).isVerified());
+            m.addAttribute("isVerified", user.isVerified());
         }
         else{
             m.addAttribute("isLogged", false);

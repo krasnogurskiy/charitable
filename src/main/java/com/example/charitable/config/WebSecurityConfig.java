@@ -28,7 +28,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/get-transaction-status","/payment/**","/main","/requests","/request/**","/request","/registration",
+                // Донати доступні і для анонімних користувачів: сторінка оплати, callback LiqPay
+                // (server_url), повернення з LiqPay (result_url) та сторінка помилки донату
+                .antMatchers("/get-transaction-status","/payment","/payment/**","/donation-successful",
+                        "/donation-successful/**","/donation-error","/main","/requests","/request/**","/request","/registration",
                         "/css/**", "/js/**", "/img/**","/fonts/**","/icons/**","/uploadingDir/**","/profile/**","/profile/achievements/**",
                         "/request/donations/**","/requests/filter","/main/donation-successful/**").permitAll()
                 .anyRequest().authenticated()
@@ -40,7 +43,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                 .and()
                     .logout()
-                    .permitAll().and().csrf().disable();
+                    .permitAll()
+                .and()
+                    // CSRF вимкнений глобально (у т.ч. для POST-callback від LiqPay на /get-transaction-status,
+                    // який не може передати CSRF-токен). Якщо колись CSRF увімкнуть — залиште
+                    // .csrf().ignoringAntMatchers("/get-transaction-status")
+                    .csrf().disable();
     }
 
     @Override

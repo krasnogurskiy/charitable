@@ -10,8 +10,9 @@ public class Donation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // null означає анонімний донат (користувач не зареєстрований / не авторизований)
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(name="user_id", nullable=true)
     private User user;
 
     @ManyToOne
@@ -66,6 +67,10 @@ public class Donation {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isAnonymous() {
+        return user == null;
     }
 
     public Request getRequest() {

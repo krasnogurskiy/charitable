@@ -27,8 +27,15 @@
                     <#list request.getRecentDonate() as person>
                         <div class="person aic">
                             <div class="left">
-                                <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + person.getUser().avatar});"></div>
-                                <div class="name">${person.getUser().getFirstName() +  " " + person.getUser().getSurname()}</div>
+                                <#if person.user??>
+                                    <a href="/profile/${person.user.id?c}" style="display: flex; align-items: center; color: inherit;">
+                                        <div class="tinyavatar1" style="background-image: url(${"https://charitable-upload-2.s3.amazonaws.com/avatar/" + ((person.user.avatar)!"")});"></div>
+                                        <div class="name">${(person.user.firstName)!""} ${(person.user.surname)!""}</div>
+                                    </a>
+                                <#else>
+                                    <div class="tinyavatar1" style="background-image: url(/img/anon.png);"></div>
+                                    <div class="name">${springMacroRequestContext.getMessage("anonymousUser.message")!"Анонімний користувач"}</div>
+                                </#if>
                             </div>
                             <div class="summ">$${person.getDonatedSum()}</div>
                         </div>
@@ -39,7 +46,7 @@
         <div class="detailed">
             <div class="innerdet">
                 <p class="maintxtprof suma">$${request.getCollectedSum()} ${springMacroRequestContext.getMessage("wraised.message")!"[відсутнє повідомлення]"}</p>
-                <p class="lighttxt"><#assign result = 0> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} ${springMacroRequestContext.getMessage("pdon.message")!"[відсутнє повідомлення]"}</p>
+                <p class="lighttxt"><#assign result = request.getAnonymousDonationsCount()> <#list request.getTopDonaters()?keys as key> <#assign result++> </#list> ${result} ${springMacroRequestContext.getMessage("pdon.message")!"[відсутнє повідомлення]"}</p>
                 <a href="">
                     <div class="button_proj">${springMacroRequestContext.getMessage("resp.message")!"[відсутнє повідомлення]"}</div>
                 </a>
